@@ -1,0 +1,19 @@
+package tn.esprit.softib.service;
+
+import java.util.List;
+import java.util.Set;
+
+import tn.esprit.softib.entity.Formulaire;
+import tn.esprit.softib.entity.User;
+
+public interface IFormulaireService {
+
+	public List<Formulaire> getAllFormulaires();
+	public Formulaire getFormulaireById(long id);
+	public Formulaire getFormulaireByEmail(String email);
+	public Formulaire addFormulaire(Formulaire formulaire);
+	public void deleteFormulaire(long id);
+	public Formulaire updateFormulaire(Formulaire formulaire);
+	public User confirmFormulaire(long id);
+	
+}
