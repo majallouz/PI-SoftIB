@@ -13,6 +13,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import tn.esprit.softib.enums.Gender;
 import tn.esprit.softib.enums.Nature;
+import tn.esprit.softib.enums.Type;
 
 @Entity
 @Data
@@ -22,6 +23,7 @@ public class Formulaire implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
+	private String cin;
 	private String firstName;
 	private String lastName;
 	private Long phone;
@@ -31,6 +33,8 @@ public class Formulaire implements Serializable{
 	private Nature natureCompte;
 	private float salaireNet;
 	private String job;
+	private Type type;
+
 	@ManyToOne
 	private User user;
 
