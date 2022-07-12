@@ -2,13 +2,13 @@ package tn.esprit.softib.service;
 
 import java.util.List;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import tn.esprit.softib.entity.Formulaire;
 import tn.esprit.softib.entity.User;
+import tn.esprit.softib.enums.ERole;
 import tn.esprit.softib.repository.UserRepository;
 
 @Service
@@ -16,6 +16,9 @@ public class UserServiceImpl implements IUserService {
 	
 	@Autowired
 	UserRepository userRepo;
+	@Autowired
+	PasswordEncoder encoder;
+	
 
 	@Override
 	public List<User> getAllUsers() {
@@ -86,10 +89,36 @@ public class UserServiceImpl implements IUserService {
 	public User signUser(long id) {
 		User user = this.getUserById(id);
 		user.setIsSigned(Boolean.TRUE);
+		user.setPassword(encoder.encode("userPwd"));
+		
 		/*
 		 * add create account process
 		 */
 		return user;
 	}
+	
+	@Override
+	public User getUserByUsername(String username) {
+		User user = userRepo.findByUsername(username).orElse(null);
+		return user;
+	}
+
+	@Override
+	@Transactional
+	public User banUser(String username, String banRaison) {
+		User user = this.getUserByUsername(username);
+		user.setIsBanned(true);
+		user.setBanRaison(banRaison);
+				
+		return user;
+	}
+
+	@Override
+	public List<User> getClients() {
+		List<User> clients = userRepo.findClients(ERole.ROLE_CLIENT);
+		return clients;
+	}
+
+	
 
 }

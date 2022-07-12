@@ -1,8 +1,8 @@
 package tn.esprit.softib.enums;
 
 public enum ERole {
-	ADMIN,
-	CLIENT,
-	AGENT
+	ROLE_ADMIN,
+	ROLE_CLIENT,
+	ROLE_AGENT
 
 }

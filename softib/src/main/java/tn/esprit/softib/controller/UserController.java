@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import tn.esprit.softib.entity.BanUserDescription;
 import tn.esprit.softib.entity.Formulaire;
 import tn.esprit.softib.entity.User;
 import tn.esprit.softib.service.IFormulaireService;
@@ -29,6 +30,13 @@ public class UserController {
 	@ResponseBody
 	public List<User> findAll(){
 		List<User> users = (List<User>) userService.getAllUsers();
+		return users;
+	}
+	
+	@GetMapping("/findClients")
+	@ResponseBody
+	public List<User> findClients(){
+		List<User> users = (List<User>) userService.getClients();
 		return users;
 	}
 	
@@ -80,4 +88,9 @@ public class UserController {
 	}
 	
 
+	@PutMapping("/banUser")
+	@ResponseBody
+	public User banUser(@RequestBody BanUserDescription banUserDesc){
+		return userService.banUser(banUserDesc.getUsername(),banUserDesc.getBanRaison());
+	}
 }

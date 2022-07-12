@@ -5,10 +5,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
@@ -23,10 +19,15 @@ import tn.esprit.softib.enums.Type;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User implements Serializable {
+
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "UserSequence")
+	@SequenceGenerator(name = "UserSequence", allocationSize = 5)
 	private long id;
+	private String siren;
 	private String cin;
+	private String username;
+	private String password;
 	private String firstName;
 	private String lastName;
 	private Long phone;
@@ -35,27 +36,32 @@ public class User implements Serializable {
 	private String email;
 	private Type type;
 	private Boolean isSigned;
+	private Boolean isBanned;
+	private String banRaison;
 	private Date creationDate;
 	private String job;
 	private float salaireNet;
 	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "user_roles",
-			joinColumns = @JoinColumn(name = "user_id"),
-			inverseJoinColumns = @JoinColumn(name = "role_id"))
+	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<>();
 	@OneToOne
 	private DemandeCnx demandeCnx;
-	@OneToMany(cascade = CascadeType.ALL,
-			mappedBy="user")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
 	private Set<Formulaire> formulaires;
-	@OneToMany(cascade = CascadeType.ALL,
-			mappedBy="user")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
 	private Set<CreditRequest> creditRequests;
-	@OneToMany(cascade = CascadeType.ALL,
-			mappedBy="user")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
 	private Set<Compte> compte;
-	@OneToMany(cascade = CascadeType.ALL,
-			mappedBy="user")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
 	private Set<Question> questions;
 
+	public User(String username, String email, String password) {
+		this.username = username;
+		String[] codes = username.split("-");
+		this.cin = codes[0];
+		this.firstName = codes[2];
+		this.lastName = codes[1];
+		this.email = email;
+		this.password = password;
+	}
 }
