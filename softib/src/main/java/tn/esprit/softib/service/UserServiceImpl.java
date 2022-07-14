@@ -91,9 +91,6 @@ public class UserServiceImpl implements IUserService {
 		user.setIsSigned(Boolean.TRUE);
 		user.setPassword(encoder.encode("userPwd"));
 		
-		/*
-		 * add create account process
-		 */
 		return user;
 	}
 	

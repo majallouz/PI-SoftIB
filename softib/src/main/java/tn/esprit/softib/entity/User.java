@@ -3,9 +3,14 @@ package tn.esprit.softib.entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.*;
+
+import org.springframework.beans.factory.annotation.Value;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -44,16 +49,17 @@ public class User implements Serializable {
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<>();
-	@OneToOne
-	private DemandeCnx demandeCnx;
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-	private Set<Formulaire> formulaires;
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-	private Set<CreditRequest> creditRequests;
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-	private Set<Compte> compte;
+	
+	@OneToMany(mappedBy = "user", fetch=FetchType.LAZY)
+	private List<Formulaire> formulaires;
+	@OneToMany(mappedBy = "user", fetch=FetchType.LAZY)
+	private List<Compte> comptes;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
 	private Set<Question> questions;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+	private Set<CreditRequest> creditRequests;
+	@OneToOne
+	private DemandeCnx demandeCnx;
 
 	public User(String username, String email, String password) {
 		this.username = username;

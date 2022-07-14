@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
 
 import javax.transaction.Transactional;
@@ -12,6 +14,8 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import tn.esprit.softib.entity.Compte;
+import tn.esprit.softib.entity.ConfirmationMessage;
 import tn.esprit.softib.entity.FormByUserStat;
 import tn.esprit.softib.entity.Formulaire;
 import tn.esprit.softib.entity.Role;
@@ -20,6 +24,7 @@ import tn.esprit.softib.enums.ERole;
 import tn.esprit.softib.enums.FormStatus;
 import tn.esprit.softib.enums.Gender;
 import tn.esprit.softib.enums.Nature;
+import tn.esprit.softib.enums.Status;
 import tn.esprit.softib.repository.FormulaireRepository;
 import tn.esprit.softib.repository.RoleRepository;
 import tn.esprit.softib.repository.UserRepository;
@@ -31,7 +36,9 @@ public class FormulaireServiceImpl implements IFormulaireService {
 	FormulaireRepository formulaireRepository;
 	@Autowired
 	RoleRepository roleRepository;
-
+	
+	@Autowired
+	ICompteService compteService;
 	@Autowired
 	IUserService userService;
 
@@ -104,7 +111,7 @@ public class FormulaireServiceImpl implements IFormulaireService {
 			if (formulaire.getCin() != null) {
 				oldFormulaire.setCin(formulaire.getCin());
 			}
-			if (formulaire.getType() != null ) {
+			if (formulaire.getType() != null) {
 				oldFormulaire.setType(formulaire.getType());
 			}
 			formulaireRepository.save(oldFormulaire);
@@ -118,12 +125,23 @@ public class FormulaireServiceImpl implements IFormulaireService {
 	 */
 	@Override
 	@Transactional
-	public User confirmFormulaire(long id) {
+	public ConfirmationMessage confirmFormulaire(long id) {
+		ConfirmationMessage confMsg = new ConfirmationMessage();
 		Formulaire formulaire = getFormulaireById(id);
 		User user = userService.getUserByEmail(formulaire.getEmail());
-		if (user!=null
-				/*&& checkNatureForUser(formulaire.getNatureCompte())*/) {
-			
+		
+		if (user != null && !checkNatureForUser(formulaire.getNatureCompte(), user)) {
+			confMsg.setStatus(Status.KO);
+			confMsg.setMessage("user "+user.getUsername()+" already has account "+formulaire.getNatureCompte().toString());
+			formulaire.setFormStatus(FormStatus.REJECTED);
+			return confMsg;
+		}else if (user != null && checkNatureForUser(formulaire.getNatureCompte(), user)) {
+			mapFormToAccount(formulaire, user);
+			confMsg.setStatus(Status.OK);
+			confMsg.setMessage("Account "+formulaire.getNatureCompte().toString()+" succefully created for user: "+user.getUsername());
+			formulaire.setFormStatus(FormStatus.CONFIRMED);
+			formulaire.setUser(user);
+			return confMsg;
 		} else {
 			if (user == null) {
 				User newUser = mapFormulaireToUser(formulaire);
@@ -132,18 +150,56 @@ public class FormulaireServiceImpl implements IFormulaireService {
 				Set<Role> roles = new HashSet<>();
 				roles.add(userRole);
 				newUser.setRoles(roles);
-				userService.addUser(newUser);
+				newUser = userService.addUser(newUser);				
+				Compte compte = mapFormToAccount(formulaire,newUser);	
+				confMsg.setStatus(Status.OK);
+				confMsg.setMessage("Account "+formulaire.getNatureCompte().toString()+" succefully created for user: "+newUser.getUsername());
 				formulaire.setFormStatus(FormStatus.CONFIRMED);
 				formulaire.setUser(newUser);
+				return confMsg;
 			}
 		}
-		
-		return user;
+		confMsg.setStatus(Status.KO);
+		confMsg.setMessage("problem encountred");
+		return confMsg;
 	}
 
-	private boolean checkNatureForUser(Nature natureCompte) {
-		// TODO Auto-generated method stub
-		return false;
+	private Compte mapFormToAccount(Formulaire formulaire, User user) {
+		Compte compte = new Compte();
+		compte.setNomComplet(formulaire.getLastName() + " " + formulaire.getFirstName());
+		compte.setNatureCompte(formulaire.getNatureCompte());
+		compte.setIban(generateRandomCode(30));
+		compte.setCodeBic(generateRandomCode(5));
+		compte.setSolde(0);
+		compte.setUser(user);
+		return compteService.addCompte(compte);
+		
+	}
+
+	private String generateRandomCode(int length) {
+		String numbers = "0123456789";
+		StringBuilder sb = new StringBuilder();
+		Random random = new Random();
+		for (int i = 0; i < length; i++) {
+			int index = random.nextInt(numbers.length());
+			char randomChar = numbers.charAt(index);
+			sb.append(randomChar);
+		}
+
+		String randomString = sb.toString();
+		return randomString;
+	}
+
+	private boolean checkNatureForUser(Nature natureCompte, User user) {
+		List<Compte> comptes = user.getComptes();
+		if (comptes != null & comptes.size() != 0) {
+			 Optional<Compte> compte = comptes.stream()
+					.filter(c -> c.getNatureCompte().toString().equals(natureCompte.toString())).findFirst();
+			if (compte != null & !compte.isEmpty()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private User mapFormulaireToUser(Formulaire formulaire) {
@@ -151,7 +207,7 @@ public class FormulaireServiceImpl implements IFormulaireService {
 		user.setCin(formulaire.getCin());
 		user.setFirstName(formulaire.getFirstName());
 		user.setLastName(formulaire.getLastName());
-		user.setUsername(formulaire.getCin()+"-"+formulaire.getLastName()+"-"+formulaire.getFirstName());
+		user.setUsername(formulaire.getCin() + "-" + formulaire.getLastName() + "-" + formulaire.getFirstName());
 		user.setPhone(formulaire.getPhone());
 		user.setGender(formulaire.getGender());
 		user.setAdresse(formulaire.getAdresse());
@@ -161,12 +217,10 @@ public class FormulaireServiceImpl implements IFormulaireService {
 		user.setType(formulaire.getType());
 		user.setIsSigned(false);
 		user.setIsBanned(false);
-		//SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");  
-		Date date = new Date();  
+		// SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+		Date date = new Date();
 		user.setCreationDate(date);
-		Set<Role> roles = new HashSet<Role>();
-		roles.add(new Role(ERole.ROLE_CLIENT));
-		user.setRoles(roles);
+		
 		return user;
 	}
 
@@ -183,10 +237,10 @@ public class FormulaireServiceImpl implements IFormulaireService {
 			stat.setConfirmed(confirmed);
 			int rejected = formulaireRepository.findFormsByStatus(user.getCin(), FormStatus.REJECTED);
 			stat.setRejected(rejected);
-			stats.add(stat);			
+			stats.add(stat);
 		}
-		
-		return stats;		
+
+		return stats;
 	}
 
 	@Override
