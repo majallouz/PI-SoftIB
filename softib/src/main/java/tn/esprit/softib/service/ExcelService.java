@@ -15,10 +15,11 @@ import tn.esprit.softib.repository.FormulaireRepository;
 public class ExcelService {
   @Autowired
   FormulaireRepository repository;
-  public void save(MultipartFile file) {
+  public int save(MultipartFile file) {
     try {
       List<Formulaire> formulaires = ExcelHelper.excelToFormulaires(file.getInputStream());
       repository.saveAll(formulaires);
+      return formulaires.size();
     } catch (IOException e) {
       throw new RuntimeException("fail to store excel data: " + e.getMessage());
     }
