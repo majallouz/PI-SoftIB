@@ -3,6 +3,8 @@ package tn.esprit.softib.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import tn.esprit.softib.entity.BanUserDescription;
+import jdk.internal.org.jline.utils.Log;
+import tn.esprit.softib.Response.ResponseMessage;
 import tn.esprit.softib.entity.Formulaire;
 import tn.esprit.softib.entity.User;
 import tn.esprit.softib.service.IFormulaireService;
@@ -86,6 +90,20 @@ public class UserController {
 	public User signUser(@PathVariable("id") Long id){
 		return userService.signUser(id);
 	}
+	
+	 @DeleteMapping("/auto")
+	    public ResponseEntity<ResponseMessage> autoDelete() {
+	      String message = "";
+	      try {
+	    	  userService.deleteAutoUser();
+	    	  Log.debug(userService.deleteAutoUser());
+	        message = "user deleted automatically ";
+	        return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
+	      } catch (Exception e) {
+	        message = "Could not delete user ! ";
+	        return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
+	      }
+	    }
 	
 
 	@PutMapping("/banUser")

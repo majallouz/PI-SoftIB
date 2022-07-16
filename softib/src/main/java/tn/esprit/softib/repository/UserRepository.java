@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import tn.esprit.softib.entity.Compte;
 import tn.esprit.softib.entity.User;
 import tn.esprit.softib.enums.ERole;
 
@@ -26,4 +27,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	
 	@Query("SELECT u FROM User u JOIN u.roles r WHERE r.name LIKE '%:roleName%'")
 	List<User> findClients(ERole roleName);
+	 @Query(nativeQuery=true, value = "select * FROM user u WHERE DATE(u.creation_Date) < DATE(NOW() - INTERVAL 7 DAY)")
+	 public Compte deleteAutoUser();
 }

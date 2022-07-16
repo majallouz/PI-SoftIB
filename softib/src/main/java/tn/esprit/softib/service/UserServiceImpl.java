@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import tn.esprit.softib.entity.Compte;
 import tn.esprit.softib.entity.User;
 import tn.esprit.softib.enums.ERole;
 import tn.esprit.softib.repository.UserRepository;
@@ -90,6 +91,7 @@ public class UserServiceImpl implements IUserService {
 		User user = this.getUserById(id);
 		user.setIsSigned(Boolean.TRUE);
 		user.setPassword(encoder.encode("userPwd"));
+		//mail 
 		
 		return user;
 	}
@@ -117,5 +119,11 @@ public class UserServiceImpl implements IUserService {
 	}
 
 	
+
+	@Override
+	public Compte deleteAutoUser() {
+		return userRepo.deleteAutoUser();
+		
+	}
 
 }
