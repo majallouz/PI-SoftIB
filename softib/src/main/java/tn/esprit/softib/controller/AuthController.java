@@ -2,6 +2,7 @@ package tn.esprit.softib.controller;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -61,6 +62,18 @@ public class AuthController {
 		if (user.getIsBanned()) {
 			return ResponseEntity.ok("user banned /n ban raison : " + user.getBanRaison());
 		}
+		Boolean isAdmin = Boolean.FALSE;
+		Set<Role> userRoles = user.getRoles();
+		Iterator<Role> iter=userRoles.iterator();
+		while(!isAdmin && iter.hasNext()) {
+			Role role = iter.next();
+			if (role.getName().equals(ERole.ROLE_ADMIN)) {
+				isAdmin = Boolean.TRUE;
+			}
+		}
+		if (!isAdmin && !user.getIsSigned()) {
+			return ResponseEntity.ok("User not signed");
+		}
 		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 		List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
 				.collect(Collectors.toList());
@@ -108,6 +121,7 @@ public class AuthController {
 		}
 		user.setRoles(roles);
 		user.setIsBanned(false);
+		user.setIsSigned(false);
 		user.setCreationDate(new Date());
 		userRepository.save(user);
 		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));

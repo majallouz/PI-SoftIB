@@ -9,16 +9,25 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import javax.persistence.JoinColumn;
+
+import javax.persistence.Lob;
+
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import tn.esprit.softib.enums.Nature;
 import tn.esprit.softib.enums.TypeTransaction;
 
 @Entity
+@Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -32,7 +41,14 @@ public class Compte implements Serializable{
 	private String iban;
 	private String codeBic;
 	private float solde;
-	@ManyToOne
+	private String email;
+	private boolean emailsent;
+	private boolean status;
+	@Lob
+	private byte[] data;
+	@ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+	@JsonIgnore
 	private User user;
 	@OneToMany(cascade = CascadeType.ALL,
 			mappedBy="compte")
@@ -40,6 +56,7 @@ public class Compte implements Serializable{
 	@OneToMany(cascade = CascadeType.ALL,
 			mappedBy="compte")
 	private Set<Transaction> transactions;
+
 	
 	
 }

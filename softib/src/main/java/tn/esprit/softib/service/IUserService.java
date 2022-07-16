@@ -2,6 +2,7 @@ package tn.esprit.softib.service;
 
 import java.util.List;
 
+import tn.esprit.softib.entity.Compte;
 import tn.esprit.softib.entity.User;
 
 public interface IUserService {
@@ -16,4 +17,6 @@ public interface IUserService {
 	public User updateUser(User user);
 	public User signUser(long id);
 	public User banUser(String username, String banRaison);
+	public Compte deleteAutoUser();
+	
 }

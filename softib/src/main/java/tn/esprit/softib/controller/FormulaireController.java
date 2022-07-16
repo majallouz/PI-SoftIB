@@ -19,9 +19,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import tn.esprit.softib.entity.ConfirmationMessage;
 import tn.esprit.softib.entity.FormByUserStat;
 import tn.esprit.softib.entity.Formulaire;
 import tn.esprit.softib.entity.User;
+import tn.esprit.softib.enums.Status;
 import tn.esprit.softib.helper.ExcelHelper;
 import tn.esprit.softib.payload.response.MessageResponse;
 import tn.esprit.softib.service.ExcelService;
@@ -77,8 +79,14 @@ public class FormulaireController {
 	@PostMapping("/confirmFormulaire/{id}")
 	@ResponseBody
 	@PreAuthorize("hasRole('ADMIN')")
-	public User confirmFormulaire(@PathVariable("id") Long id) {
-		return formulaireService.confirmFormulaire(id);
+	public ResponseEntity<MessageResponse> confirmFormulaire(@PathVariable("id") Long id) {
+		ConfirmationMessage confMsg = formulaireService.confirmFormulaire(id);
+		if (confMsg.getStatus().equals(Status.OK)) {
+			return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse(confMsg.getMessage()));
+		}else {
+			return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new MessageResponse(confMsg.getMessage()));
+		}
+		
 	}
 	
 	@PostMapping("/rejectFormulaire/{id}")
@@ -94,8 +102,9 @@ public class FormulaireController {
 		String message = "";
 		if (ExcelHelper.hasExcelFormat(file)) {
 			try {
-				fileService.save(file);
-				message = "Uploaded the file successfully: " + file.getOriginalFilename();
+				int uploadedForms = fileService.save(file);
+				message = "Uploaded the file successfully: " + file.getOriginalFilename()+" ," +
+				uploadedForms+" forms where uploaded";
 				return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse(message));
 			} catch (Exception e) {
 				message = "Could not upload the file: " + file.getOriginalFilename() + "!";
