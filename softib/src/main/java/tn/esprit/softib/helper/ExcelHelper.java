@@ -1,5 +1,9 @@
 package tn.esprit.softib.helper;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -19,9 +23,15 @@ import tn.esprit.softib.enums.Nature;
 import tn.esprit.softib.enums.Type;
 
 public class ExcelHelper {
+	private static final String FAIL_UPLOAD = "fail to parse Excel file: ";
+	private static final String FAIL_EXPORT = "fail to export data to Excel file: ";
+	private static final String FILENAME = "formulaires.xlsx";
+	private static final String FOLDER_EXPORT = "C:\\Users\\majallouz\\3ALINFO3\\";
 	public static String TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 	static String[] HEADERs = { "Cin", "FirstName", "LastName", "Phone", "Gender", "Adresse", "Email", "NatureCompte",
 			"SalaireNet", "Job", "Type" };
+	static String[] HEADERsEXPORT = { "Cin", "FirstName", "LastName", "Phone", "Gender", "Adresse", "Email", "NatureCompte",
+			"SalaireNet", "Job", "Type","Status" };
 	static String SHEET = "formulaires";
 
 	public static boolean hasExcelFormat(MultipartFile file) {
@@ -110,7 +120,42 @@ public class ExcelHelper {
 			workbook.close();
 			return formulaires;
 		} catch (IOException e) {
-			throw new RuntimeException("fail to parse Excel file: " + e.getMessage());
+			throw new RuntimeException(FAIL_UPLOAD + e.getMessage());
 		}
 	}
+	
+	public static ByteArrayInputStream FormulairesToExcel(List<Formulaire> formulaires) {
+	    try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream();) {
+	      Sheet sheet = workbook.createSheet(SHEET);
+	      // Header
+	      Row headerRow = sheet.createRow(0);
+	      for (int col = 0; col < HEADERsEXPORT.length; col++) {
+	        Cell cell = headerRow.createCell(col);
+	        cell.setCellValue(HEADERsEXPORT[col]);
+	      }
+	      int rowIdx = 1;
+	      for (Formulaire formulaire : formulaires) {
+	        Row row = sheet.createRow(rowIdx++);
+	        row.createCell(0).setCellValue(formulaire.getCin());
+	        row.createCell(1).setCellValue(formulaire.getFirstName());
+	        row.createCell(2).setCellValue(formulaire.getLastName());
+	        row.createCell(3).setCellValue(formulaire.getPhone());
+	        row.createCell(4).setCellValue(formulaire.getGender().toString());
+	        row.createCell(5).setCellValue(formulaire.getAdresse());
+	        row.createCell(6).setCellValue(formulaire.getEmail());
+	        row.createCell(7).setCellValue(formulaire.getNatureCompte().toString());
+	        row.createCell(8).setCellValue(formulaire.getSalaireNet());
+	        row.createCell(9).setCellValue(formulaire.getJob());
+	        row.createCell(10).setCellValue(formulaire.getType().toString());
+	        row.createCell(11).setCellValue(formulaire.getFormStatus().toString());
+	      }
+	      workbook.write(out);
+	      FileOutputStream out2 = new FileOutputStream(
+	              new File(FOLDER_EXPORT+FILENAME));
+	      workbook.write(out2);
+	      return new ByteArrayInputStream(out.toByteArray());
+	    } catch (IOException e) {
+	      throw new RuntimeException(FAIL_EXPORT + e.getMessage());
+	    }
+	  }
 }
