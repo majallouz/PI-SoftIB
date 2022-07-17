@@ -1,5 +1,6 @@
 package tn.esprit.softib.service;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ import tn.esprit.softib.repository.FormulaireRepository;
 public class ExcelService {
   @Autowired
   FormulaireRepository repository;
-  public int save(MultipartFile file) {
+  public int importExcel(MultipartFile file) {
     try {
       List<Formulaire> formulaires = ExcelHelper.excelToFormulaires(file.getInputStream());
       repository.saveAll(formulaires);
@@ -24,5 +25,11 @@ public class ExcelService {
       throw new RuntimeException("fail to store excel data: " + e.getMessage());
     }
   }
+  
+  public ByteArrayInputStream exportExcel() {
+	    List<Formulaire> formulaires = repository.findAll();
+	    ByteArrayInputStream in = ExcelHelper.FormulairesToExcel(formulaires);
+	    return in;
+	  }
   
 }

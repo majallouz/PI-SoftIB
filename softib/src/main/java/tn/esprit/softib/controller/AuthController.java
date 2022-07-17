@@ -36,6 +36,12 @@ import tn.esprit.softib.enums.ERole;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+	private static final String USER_BANNED_N_BAN_RAISON = "user banned /n ban raison : ";
+	private static final String USER_NOT_SIGNED = "User not signed";
+	private static final String ERROR_EMAIL_IS_ALREADY_IN_USE = "Error: Email is already in use!";
+	private static final String ERROR_USERNAME_IS_ALREADY_TAKEN = "Error: Username is already taken!";
+	private static final String USER_REGISTERED_SUCCESSFULLY = "User registered successfully!";
+	private static final String ERROR_ROLE_IS_NOT_FOUND = "Error: Role is not found.";
 	@Autowired
 	AuthenticationManager authenticationManager;
 	@Autowired
@@ -60,7 +66,7 @@ public class AuthController {
 		
 		
 		if (user.getIsBanned()) {
-			return ResponseEntity.ok("user banned /n ban raison : " + user.getBanRaison());
+			return ResponseEntity.ok(USER_BANNED_N_BAN_RAISON + user.getBanRaison());
 		}
 		Boolean isAdmin = Boolean.FALSE;
 		Set<Role> userRoles = user.getRoles();
@@ -72,7 +78,7 @@ public class AuthController {
 			}
 		}
 		if (!isAdmin && !user.getIsSigned()) {
-			return ResponseEntity.ok("User not signed");
+			return ResponseEntity.ok(USER_NOT_SIGNED);
 		}
 		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 		List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
@@ -85,10 +91,10 @@ public class AuthController {
 	@PostMapping("/signup")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
 		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-			return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
+			return ResponseEntity.badRequest().body(new MessageResponse(ERROR_USERNAME_IS_ALREADY_TAKEN));
 		}
 		if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-			return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already in use!"));
+			return ResponseEntity.badRequest().body(new MessageResponse(ERROR_EMAIL_IS_ALREADY_IN_USE));
 		}
 		// Create new user's account
 		User user = new User(signUpRequest.getUsername(), signUpRequest.getEmail(),
@@ -97,24 +103,24 @@ public class AuthController {
 		Set<Role> roles = new HashSet<>();
 		if (strRoles == null) {
 			Role userRole = roleRepository.findByName(ERole.ROLE_CLIENT)
-					.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+					.orElseThrow(() -> new RuntimeException(ERROR_ROLE_IS_NOT_FOUND));
 			roles.add(userRole);
 		} else {
 			strRoles.forEach(role -> {
 				switch (role) {
 				case "admin":
 					Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-							.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+							.orElseThrow(() -> new RuntimeException(ERROR_ROLE_IS_NOT_FOUND));
 					roles.add(adminRole);
 					break;
 				case "agent":
 					Role modRole = roleRepository.findByName(ERole.ROLE_AGENT)
-							.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+							.orElseThrow(() -> new RuntimeException(ERROR_ROLE_IS_NOT_FOUND));
 					roles.add(modRole);
 					break;
 				default:
 					Role userRole = roleRepository.findByName(ERole.ROLE_CLIENT)
-							.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+							.orElseThrow(() -> new RuntimeException(ERROR_ROLE_IS_NOT_FOUND));
 					roles.add(userRole);
 				}
 			});
@@ -124,6 +130,6 @@ public class AuthController {
 		user.setIsSigned(false);
 		user.setCreationDate(new Date());
 		userRepository.save(user);
-		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+		return ResponseEntity.ok(new MessageResponse(USER_REGISTERED_SUCCESSFULLY));
 	}
 }
