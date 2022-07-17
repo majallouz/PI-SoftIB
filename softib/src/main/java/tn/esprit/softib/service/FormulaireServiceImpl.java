@@ -1,5 +1,6 @@
 package tn.esprit.softib.service;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -179,7 +180,7 @@ public class FormulaireServiceImpl implements IFormulaireService {
 		compte.setNatureCompte(formulaire.getNatureCompte());
 		compte.setIban(generateRandomCode(30));
 		compte.setCodeBic(generateRandomCode(5));
-		compte.setSolde(0);
+		compte.setSolde(new BigDecimal(0));
 		compte.setUser(user);
 		return compteService.addCompte(compte);
 		
