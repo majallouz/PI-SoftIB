@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
+import java.math.BigDecimal;
+import java.util.Collection;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -40,7 +42,7 @@ public class Compte implements Serializable{
 	private String rib;
 	private String iban;
 	private String codeBic;
-	private float solde;
+	private BigDecimal solde;
 	private String email;
 	private boolean emailsent;
 	private boolean status;
@@ -53,9 +55,8 @@ public class Compte implements Serializable{
 	@OneToMany(cascade = CascadeType.ALL,
 			mappedBy="compte")
 	private Set<Credit> credits;
-	@OneToMany(cascade = CascadeType.ALL,
-			mappedBy="compte")
-	private Set<Transaction> transactions;
+	 @OneToMany(mappedBy="compte")
+	    private Collection<Operation> operations;
 
 	
 	

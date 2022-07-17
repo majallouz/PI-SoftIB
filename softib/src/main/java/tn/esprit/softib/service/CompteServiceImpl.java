@@ -2,6 +2,7 @@ package tn.esprit.softib.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,7 +77,7 @@ public class CompteServiceImpl implements ICompteService {
 				&& !(oldCompte.getCodeBic().equals(compte.getCodeBic()))) {
 			oldCompte.setCodeBic(compte.getCodeBic());
 		}
-		if ( compte.getSolde()!=0.0f
+		if ( compte.getSolde()!=new BigDecimal(0)
 				&& oldCompte.getSolde() != compte.getSolde()) {
 			oldCompte.setSolde(compte.getSolde());
 		}

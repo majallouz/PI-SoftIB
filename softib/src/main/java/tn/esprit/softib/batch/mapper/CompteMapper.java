@@ -18,7 +18,7 @@ public class CompteMapper implements RowMapper<Compte>{
                 .rib(rs.getString("rib"))
                 .iban(rs.getString("iban"))
                 .codeBic(rs.getString("code_bic"))
-                .solde(rs.getFloat("solde"))
+                .solde(rs.getBigDecimal("solde"))
                 .email(rs.getString("email"))
                 .emailsent(rs.getBoolean("emailsent"))
                 .status(rs.getBoolean("status"))
