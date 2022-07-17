@@ -1,9 +1,15 @@
 package tn.esprit.softib.service;
 
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import tn.esprit.softib.entity.Compte;
 import tn.esprit.softib.entity.User;
@@ -71,7 +77,7 @@ public class CompteServiceImpl implements ICompteService {
 				&& !(oldCompte.getCodeBic().equals(compte.getCodeBic()))) {
 			oldCompte.setCodeBic(compte.getCodeBic());
 		}
-		if ( compte.getSolde()!=0.0f
+		if ( compte.getSolde()!=new BigDecimal(0)
 				&& oldCompte.getSolde() != compte.getSolde()) {
 			oldCompte.setSolde(compte.getSolde());
 		}
@@ -79,8 +85,18 @@ public class CompteServiceImpl implements ICompteService {
 
         return compte;
 	}
+	 public Compte store(long id, MultipartFile file) throws IOException {
+		    String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+		    Compte newCompte = getCompteById(id);
+		    newCompte.setData(file.getBytes());
+		    return compteRepository.save(newCompte);
+		  }
 
+	
 
+	 
+	 
+	
 
 
 

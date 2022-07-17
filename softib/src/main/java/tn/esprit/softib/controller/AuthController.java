@@ -71,7 +71,7 @@ public class AuthController {
 				isAdmin = Boolean.TRUE;
 			}
 		}
-		if (!isAdmin && user.getIsSigned()) {
+		if (!isAdmin && !user.getIsSigned()) {
 			return ResponseEntity.ok("User not signed");
 		}
 		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
