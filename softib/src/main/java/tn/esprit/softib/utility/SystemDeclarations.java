@@ -1,5 +1,7 @@
 package tn.esprit.softib.utility;
 
+import com.itextpdf.text.Font;
+
 public class SystemDeclarations {
 	
 	//Credit
@@ -20,5 +22,9 @@ public class SystemDeclarations {
     public static final String DATE_FORMAT = "MM/dd/yyyy";
     public static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'hh:mm";
     
+  //PDF File config
+    public static Font COURIER = new Font(Font.FontFamily.COURIER, 20, Font.BOLD);
+    public static Font COURIER_SMALL = new Font(Font.FontFamily.COURIER, 16, Font.BOLD);
+    public static Font COURIER_SMALL_FOOTER = new Font(Font.FontFamily.COURIER, 12, Font.BOLD);
 
 }
