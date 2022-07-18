@@ -37,6 +37,14 @@ import tn.esprit.softib.service.IFormulaireService;
 @RequestMapping("/formulaire")
 public class FormulaireController {
 
+	private static final String FILENAME = "formulaires.xlsx";
+	private static final String PLEASE_UPLOAD_AN_EXCEL_FILE = "Please upload an excel file!";
+	private static final String EXCLAMATION = "!";
+	private static final String COULD_NOT_UPLOAD_THE_FILE = "Could not upload the file: ";
+	private static final String FORMS_WHERE_UPLOADED = " forms where uploaded";
+	private static final String VIRGULE = " ,";
+	private static final String UPLOADED_THE_FILE_SUCCESSFULLY = "Uploaded the file successfully: ";
+	private static final String EMPTY = "";
 	@Autowired
 	IFormulaireService formulaireService;
 	@Autowired
@@ -103,19 +111,19 @@ public class FormulaireController {
 	@PostMapping("/upload")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<MessageResponse> uploadFile(@RequestParam("file") MultipartFile file) {
-		String message = "";
+		String message = EMPTY;
 		if (ExcelHelper.hasExcelFormat(file)) {
 			try {
 				int uploadedForms = fileService.importExcel(file);
-				message = "Uploaded the file successfully: " + file.getOriginalFilename() + " ," + uploadedForms
-						+ " forms where uploaded";
+				message = UPLOADED_THE_FILE_SUCCESSFULLY + file.getOriginalFilename() + VIRGULE + uploadedForms
+						+ FORMS_WHERE_UPLOADED;
 				return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse(message));
 			} catch (Exception e) {
-				message = "Could not upload the file: " + file.getOriginalFilename() + "!";
+				message = COULD_NOT_UPLOAD_THE_FILE + file.getOriginalFilename() + EXCLAMATION;
 				return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new MessageResponse(message));
 			}
 		}
-		message = "Please upload an excel file!";
+		message = PLEASE_UPLOAD_AN_EXCEL_FILE;
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageResponse(message));
 	}
 
@@ -127,9 +135,9 @@ public class FormulaireController {
 	}
 
 	@GetMapping("/export")
-	//@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<Resource> getFile() {
-		String filename = "formulaires.xlsx";
+		String filename = FILENAME;
 		InputStreamResource file = new InputStreamResource(fileService.exportExcel());
 		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
 				.contentType(MediaType.parseMediaType("application/vnd.ms-excel")).body(file);
