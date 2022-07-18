@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,6 +33,7 @@ public class UserController {
 	
 	@GetMapping("/findAll")
 	@ResponseBody
+	@PreAuthorize("hasRole('ADMIN')")
 	public List<User> findAll(){
 		List<User> users = (List<User>) userService.getAllUsers();
 		return users;
@@ -39,6 +41,7 @@ public class UserController {
 	
 	@GetMapping("/findClients")
 	@ResponseBody
+	@PreAuthorize("hasRole('ADMIN')")
 	public List<User> findClients(){
 		List<User> users = (List<User>) userService.getClients();
 		return users;
@@ -46,6 +49,7 @@ public class UserController {
 	
 	@GetMapping("/findByEmail/{email}")
 	@ResponseBody
+	@PreAuthorize("hasRole('ADMIN')")
 	public User findByEmail(@PathVariable("email") String email){
 		User user = userService.getUserByEmail(email);
 		return user;
@@ -53,6 +57,7 @@ public class UserController {
 	
 	@GetMapping("/findByCin/{cin}")
 	@ResponseBody
+	@PreAuthorize("hasRole('ADMIN')")
 	public User findByCin(@PathVariable("cin") String cin){
 		User user = userService.getUserByCin(cin);
 		return user;
@@ -61,6 +66,7 @@ public class UserController {
 		
 	@GetMapping("/findById/{id}")
 	@ResponseBody
+	@PreAuthorize("hasRole('ADMIN')")
 	public User findById(@PathVariable("id") Long id){
 		User user = userService.getUserById(id);
 		return user;
@@ -68,6 +74,7 @@ public class UserController {
 	
 	@PostMapping("/save")
 	@ResponseBody
+	@PreAuthorize("hasRole('ADMIN')")
 	public User save(@RequestBody User userBody){
 		User user = userService.addUser(userBody);
 		return user;
@@ -75,18 +82,21 @@ public class UserController {
 	
 	@DeleteMapping("/delete/{id}")
 	@ResponseBody
+	@PreAuthorize("hasRole('ADMIN')")
 	public void delete(@PathVariable("id") Long id){
 		userService.deleteUser(id);
 	}
 	
 	@PutMapping("/update")
 	@ResponseBody
+	@PreAuthorize("hasRole('ADMIN')")
 	public User update(@RequestBody User newUser){
 		return userService.updateUser(newUser);
 	}
 	
 	@PutMapping("/signUser/{id}")
 	@ResponseBody
+	@PreAuthorize("hasRole('ADMIN')")
 	public User signUser(@PathVariable("id") Long id){
 		return userService.signUser(id);
 	}
@@ -108,6 +118,7 @@ public class UserController {
 
 	@PutMapping("/banUser")
 	@ResponseBody
+	@PreAuthorize("hasRole('ADMIN')")
 	public User banUser(@RequestBody BanUserDescription banUserDesc){
 		return userService.banUser(banUserDesc.getUsername(),banUserDesc.getBanRaison());
 	}

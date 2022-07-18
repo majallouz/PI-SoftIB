@@ -24,7 +24,9 @@ import tn.esprit.softib.validator.TransactionValidator;
 public class TransactionServiceImpl implements ITransactionService {
     @Autowired
     TransactionRepository transactionRepository;
+@Autowired
     IOperationService operationService;
+@Autowired
     ICompteService accountService;
 
     @Override

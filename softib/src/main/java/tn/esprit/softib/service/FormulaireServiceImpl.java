@@ -1,5 +1,6 @@
 package tn.esprit.softib.service;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,6 +33,15 @@ import tn.esprit.softib.repository.UserRepository;
 @Service
 public class FormulaireServiceImpl implements IFormulaireService {
 
+	private static final String SEPARATOR = "-";
+	private static final String NUMBERS = "0123456789";
+	private static final String SPACE = " ";
+	private static final String PROBLEM_ENCOUNTRED = "problem encountred";
+	private static final String ERROR_ROLE_IS_NOT_FOUND = "Error: Role is not found.";
+	private static final String SUCCEFULLY_CREATED_FOR_USER = " succefully created for user: ";
+	private static final String ACCOUNT = "Account ";
+	private static final String ALREADY_HAS_ACCOUNT = " already has account ";
+	private static final String USER = "user ";
 	@Autowired
 	FormulaireRepository formulaireRepository;
 	@Autowired
@@ -132,13 +142,13 @@ public class FormulaireServiceImpl implements IFormulaireService {
 		
 		if (user != null && !checkNatureForUser(formulaire.getNatureCompte(), user)) {
 			confMsg.setStatus(Status.KO);
-			confMsg.setMessage("user "+user.getUsername()+" already has account "+formulaire.getNatureCompte().toString());
+			confMsg.setMessage(USER+user.getUsername()+ALREADY_HAS_ACCOUNT+formulaire.getNatureCompte().toString());
 			formulaire.setFormStatus(FormStatus.REJECTED);
 			return confMsg;
 		}else if (user != null && checkNatureForUser(formulaire.getNatureCompte(), user)) {
 			mapFormToAccount(formulaire, user);
 			confMsg.setStatus(Status.OK);
-			confMsg.setMessage("Account "+formulaire.getNatureCompte().toString()+" succefully created for user: "+user.getUsername());
+			confMsg.setMessage(ACCOUNT+formulaire.getNatureCompte().toString()+SUCCEFULLY_CREATED_FOR_USER+user.getUsername());
 			formulaire.setFormStatus(FormStatus.CONFIRMED);
 			formulaire.setUser(user);
 			return confMsg;
@@ -146,38 +156,38 @@ public class FormulaireServiceImpl implements IFormulaireService {
 			if (user == null) {
 				User newUser = mapFormulaireToUser(formulaire);
 				Role userRole = roleRepository.findByName(ERole.ROLE_CLIENT)
-						.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+						.orElseThrow(() -> new RuntimeException(ERROR_ROLE_IS_NOT_FOUND));
 				Set<Role> roles = new HashSet<>();
 				roles.add(userRole);
 				newUser.setRoles(roles);
 				newUser = userService.addUser(newUser);				
 				Compte compte = mapFormToAccount(formulaire,newUser);	
 				confMsg.setStatus(Status.OK);
-				confMsg.setMessage("Account "+formulaire.getNatureCompte().toString()+" succefully created for user: "+newUser.getUsername());
+				confMsg.setMessage(ACCOUNT+formulaire.getNatureCompte().toString()+SUCCEFULLY_CREATED_FOR_USER+newUser.getUsername());
 				formulaire.setFormStatus(FormStatus.CONFIRMED);
 				formulaire.setUser(newUser);
 				return confMsg;
 			}
 		}
 		confMsg.setStatus(Status.KO);
-		confMsg.setMessage("problem encountred");
+		confMsg.setMessage(PROBLEM_ENCOUNTRED);
 		return confMsg;
 	}
 
 	private Compte mapFormToAccount(Formulaire formulaire, User user) {
 		Compte compte = new Compte();
-		compte.setNomComplet(formulaire.getLastName() + " " + formulaire.getFirstName());
+		compte.setNomComplet(formulaire.getLastName() + SPACE + formulaire.getFirstName());
 		compte.setNatureCompte(formulaire.getNatureCompte());
 		compte.setIban(generateRandomCode(30));
 		compte.setCodeBic(generateRandomCode(5));
-		compte.setSolde(0);
+		compte.setSolde(new BigDecimal(0));
 		compte.setUser(user);
 		return compteService.addCompte(compte);
 		
 	}
 
 	private String generateRandomCode(int length) {
-		String numbers = "0123456789";
+		String numbers = NUMBERS;
 		StringBuilder sb = new StringBuilder();
 		Random random = new Random();
 		for (int i = 0; i < length; i++) {
@@ -207,7 +217,7 @@ public class FormulaireServiceImpl implements IFormulaireService {
 		user.setCin(formulaire.getCin());
 		user.setFirstName(formulaire.getFirstName());
 		user.setLastName(formulaire.getLastName());
-		user.setUsername(formulaire.getCin() + "-" + formulaire.getLastName() + "-" + formulaire.getFirstName());
+		user.setUsername(formulaire.getCin() + SEPARATOR + formulaire.getLastName() + SEPARATOR + formulaire.getFirstName());
 		user.setPhone(formulaire.getPhone());
 		user.setGender(formulaire.getGender());
 		user.setAdresse(formulaire.getAdresse());
@@ -217,7 +227,6 @@ public class FormulaireServiceImpl implements IFormulaireService {
 		user.setType(formulaire.getType());
 		user.setIsSigned(false);
 		user.setIsBanned(false);
-		// SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 		Date date = new Date();
 		user.setCreationDate(date);
 		
@@ -227,8 +236,15 @@ public class FormulaireServiceImpl implements IFormulaireService {
 	@Override
 	public List<FormByUserStat> getUserFormsStats() {
 		List<FormByUserStat> stats = new ArrayList<FormByUserStat>();
-		List<User> users = userService.getClients();
-		for (User user : users) {
+		//List<User> users = userService.getClients();
+		List<User> clients = new ArrayList<>();
+		for (User user : userService.getAllUsers()) {
+			if (user.getRoles().size()==1
+					& user.getRoles().iterator().next().getName().equals(ERole.ROLE_CLIENT)) {
+				clients.add(user);
+			}
+		}
+		for (User user : clients) {
 			FormByUserStat stat = new FormByUserStat();
 			stat.setUsername(user.getUsername());
 			int pending = formulaireRepository.findFormsByStatus(user.getCin(), FormStatus.PENDING);
