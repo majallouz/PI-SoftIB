@@ -16,8 +16,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
+import tn.esprit.softib.entity.FormByUserStat;
 import tn.esprit.softib.entity.Operation;
+import tn.esprit.softib.entity.OperationByStatus;
 import tn.esprit.softib.entity.Transaction;
+import tn.esprit.softib.entity.User;
+import tn.esprit.softib.enums.ERole;
+import tn.esprit.softib.enums.FormStatus;
 import tn.esprit.softib.enums.OperationStatus;
 import tn.esprit.softib.enums.OperationSubType;
 import tn.esprit.softib.enums.OperationType;
@@ -34,6 +39,7 @@ public class OperationServiceImpl implements IOperationService {
     @Autowired
     OperationRepository operationRepository;
     ITransactionService transactionService;
+	IOperationService operationService;
 
     @Override
     public Operation save(Operation operation) {
@@ -161,4 +167,32 @@ public class OperationServiceImpl implements IOperationService {
                 v,true,OperationType.RETRIEVE, OperationSubType.Regluement_Credit,OperationStatus.TO_BE_EXECUTED))
         );
     }
+    @Override
+	public List<OperationByStatus> getOperationFormsStats() {
+    	List<OperationByStatus> stats = new ArrayList<OperationByStatus>();
+		List<Operation> operations = new ArrayList<>();
+		for (Operation op : getAllOperations()) {
+			
+			operations.add(op);
+			}
+		
+		for (Operation op : operations) {
+			OperationByStatus stat = new OperationByStatus();
+			stat.setId(op.getId());
+			int executed = operationRepository.findoperationByStatus(op.getId(), OperationStatus.EXECUTED);
+			stat.setExecuted(executed);
+			int to_be_executed = operationRepository.findoperationByStatus(op.getId(), OperationStatus.TO_BE_EXECUTED);
+			stat.setTo_be_executed(to_be_executed);
+			int cancelled = operationRepository.findoperationByStatus(op.getId(), OperationStatus.CANCELLED);
+			stat.setCancelled(cancelled);
+			stats.add(stat);
+
+		}	
+		return stats;
+}
+    
+	@Override
+	public List<Operation> getAllOperations() {
+		return operationRepository.findAll();
+	}
 }
