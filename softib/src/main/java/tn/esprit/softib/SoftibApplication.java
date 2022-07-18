@@ -13,9 +13,9 @@ import tn.esprit.softib.utility.PDFGenerator;
 public class SoftibApplication {
 
 	public static void main(String[] args) {
-		ApplicationContext AP = SpringApplication.run(SoftibApplication.class, args);
+		ApplicationContext ac = SpringApplication.run(SoftibApplication.class, args);
 		
-		PDFGenerator pDFGenerator = AP.getBean("pdfGenerator",PDFGenerator.class);
+		PDFGenerator pDFGenerator = ac.getBean("pdfGenerator",PDFGenerator.class);
 		
 		pDFGenerator.generatePdfReport();
 	}

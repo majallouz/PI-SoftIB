@@ -148,7 +148,7 @@ public class PDFGenerator {
 		leaveEmptyLine(p2, 3);
 		p2.setAlignment(Element.ALIGN_MIDDLE);
 		p2.add(new Paragraph(
-				"------------------------End Of " +reportFileName+"------------------------", 
+				"------------------------ END OF " +reportFileName+"------------------------", 
 				SystemDeclarations.COURIER_SMALL_FOOTER));
 		
 		document.add(p2);
