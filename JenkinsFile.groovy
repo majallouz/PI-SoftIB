@@ -13,11 +13,6 @@ pipeline {
                 
             }
         }
-       sh "softib"
-    dir('softib') {
-      sh "softib"
-    }
-    sh "pwd"
         stage('Test') {
             steps { 
                 bat 'mvn test'
