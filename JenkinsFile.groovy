@@ -9,10 +9,13 @@ pipeline {
          stage('clone and clean repo') {
             steps {
                 git changelog: false, branch: 'master',  credentialsId: 'mgara07', poll: false, url: 'https://github.com/majallouz/PI-SoftIB.git'
-                sh cd softib
+               
                 
             }
         }
+        dir("folder") {
+    sh "softib"
+}
         stage('Test') {
             steps { 
                 bat 'mvn test'
