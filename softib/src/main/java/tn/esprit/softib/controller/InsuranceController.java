@@ -34,7 +34,7 @@ public class InsuranceController {
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<String> updateInsurance(@PathVariable(value = "id") Integer id, @RequestBody Insurance insurance) throws Exception {
-        return new ResponseEntity<>(insuranceService.updateInsurance(insurance), HttpStatus.OK);
+        return new ResponseEntity<>(insuranceService.updateInsurance(id, insurance), HttpStatus.OK);
     }
 
     
