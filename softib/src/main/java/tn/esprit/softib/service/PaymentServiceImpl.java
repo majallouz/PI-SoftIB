@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import tn.esprit.softib.repository.PaymentRepository;
+import tn.esprit.softib.utility.SystemDeclarations;
 import tn.esprit.softib.entity.Credit;
+import tn.esprit.softib.entity.Operation;
 import tn.esprit.softib.entity.Payment;
 import tn.esprit.softib.entity.Transaction;
 import tn.esprit.softib.enums.CreditStatus;
@@ -65,6 +67,9 @@ public class PaymentServiceImpl implements IPaymentService {
             if (newPayment.getPenality() != null) {
                 oldPayment.setPenality(newPayment.getPenality());
             }
+            if(newPayment.getPaymentStatus() != null) {
+            	oldPayment.setPaymentStatus(newPayment.getPaymentStatus());
+            }
             paymentRepository.save(oldPayment);
             return "Payment Updated Successfully";
         } else {
@@ -78,8 +83,8 @@ public class PaymentServiceImpl implements IPaymentService {
         return paymentRepository.findById(id.longValue()).get();
     }
 
-   /* @Override
-   public String pay(Integer creditId){
+    @Override
+    public String pay(Integer creditId){
         StringBuilder msg = new StringBuilder();
         if (CreditRepository.findById(creditId.longValue()).isPresent()) {
             Credit credit = CreditRepository.findById(creditId.longValue()).get();
@@ -91,7 +96,7 @@ public class PaymentServiceImpl implements IPaymentService {
                     Payment payment = paymentIterator.next();
                     payment.setPaymentStatus(CreditStatus.PAYED);
                     payment.setPaymentDate(LocalDate.now());
-                    if((credit.getCompte().getSolde()-(payment.getPaymentAmount())) >= 0) {
+                    if(credit.getCompte().getSolde().compareTo(new BigDecimal(payment.getPaymentAmount())) >= 0) {
                         payment.setPenality(0d);
                     } else {
                         payment.setPenality(0.03);
@@ -104,27 +109,20 @@ public class PaymentServiceImpl implements IPaymentService {
                         credit.setCreditStatus(CreditStatus.PAYED);
                     }
                     CreditRepository.save(credit);
-                    Transaction  transaction=new Transaction();
-                    Double p=payment.getPaymentAmount();
-                    transaction.setAmount(p.floatValue());
-                   transaction.setTransactionType(transactionTypeRepository.findByCode(ACCOUNT_TRANSACTION_TYPE_DEPOSIT_CODE));
-                    transaction.setDescription(transactionTypeRepository.findByCode(ACCOUNT_TRANSACTION_TYPE_DEPOSIT_CODE).getName()+"''");
-                   CompteService.debitTransaction(credit.getCompte(),transaction);
-                    CompteService.getLatestAccountTransaction(credit.getCompte()).getDescription();
-                    msg.append("Payment for the date "+ payment.getPaymentDueDate()+ " of "+ payment.getPaymentAmount() + " is "+payment.getPaymentStatus().toString()+ " With Interest "+payment.getPaymentInterest());
+                    Operation operation = new Operation();
+                    operation.setAmount(new BigDecimal(payment.getPaymentAmount()));
+                    return ("Payment for the date "+ payment.getPaymentDueDate()+ " of "+ payment.getPaymentAmount() + " is "+payment.getPaymentStatus().toString()+ " With Interest "+payment.getPaymentInterest());
                 }
                 else {
-                    msg.append("List Of Payment Is Empty");
+                    return ("List Of Payment Is Empty");
                 }
             }
             else {
-                msg.append("Credit Payed");
+                return ("Credit Payed");
             }
         }
         else {
-            msg.append("Credit Not Found");
+            return ("Credit Not Found");
         }
-        return msg.toString();
-    }*/
-
+    }
 }
