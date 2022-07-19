@@ -47,8 +47,9 @@ public class PaymentServiceImpl implements IPaymentService {
     }
 
     @Override
-    public Payment updatePayment(Payment newPayment)  {
-        Payment oldPayment = paymentRepository.findById(newPayment.getId()).orElse(null);
+    public String updatePayment(Integer id, Payment newPayment) {
+        if (paymentRepository.findById(id.longValue()).isPresent()) {
+            Payment oldPayment = paymentRepository.findById(id.longValue()).get();
             if (newPayment.getPaymentAmount() != null) {
                 oldPayment.setPaymentAmount(newPayment.getPaymentAmount());
             }
@@ -64,10 +65,12 @@ public class PaymentServiceImpl implements IPaymentService {
             if (newPayment.getPenality() != null) {
                 oldPayment.setPenality(newPayment.getPenality());
             }
-            
             paymentRepository.save(oldPayment);
-            return oldPayment ;
-        } 
+            return "Payment Updated Successfully";
+        } else {
+            return "Payment Not Found";
+        }
+    }
     
 
     @Override

@@ -48,8 +48,9 @@ public class InsuranceServiceImpl implements IInsuranceService {
     }
 
     @Override
-    public String updateInsurance(Insurance newInsurance)  {
-            Insurance oldInsurance = insuranceRepository.findById(newInsurance.getId()).orElse(null);
+    public String updateInsurance(Integer id, Insurance newInsurance)  {
+        if (insuranceRepository.findById(id.longValue()).isPresent()) {
+            Insurance oldInsurance = insuranceRepository.findById(id.longValue()).get();
             if (newInsurance.getAmount() != null) {
                 oldInsurance.setAmount(newInsurance.getAmount());
             }
@@ -65,8 +66,10 @@ public class InsuranceServiceImpl implements IInsuranceService {
 
             insuranceRepository.save(oldInsurance);
             return "Insurance Updated Successfully";
-        } 
-    
+        } else {
+            return "Insurance Not Found";
+        }
+    }
 
     @Override
     public Insurance getInsurance(Integer id)  {

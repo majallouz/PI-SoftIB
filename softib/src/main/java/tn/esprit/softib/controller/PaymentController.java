@@ -34,12 +34,13 @@ public class PaymentController {
         return new ResponseEntity<>(paymentService.deletePayment(id), HttpStatus.OK);
     }
 
-    //update payment
-    @PutMapping("/update")
-	@ResponseBody
-	public Payment update(@RequestBody Payment payment){
-		return paymentService.updatePayment(payment);
-	}
+    
+    //Update payment
+    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<String> updatePayment(@PathVariable(value = "id") Integer id, @RequestBody Payment payment) throws Exception {
+        return new ResponseEntity<>(paymentService.updatePayment(id, payment), HttpStatus.OK);
+    }
 
     
     //get payment byID
