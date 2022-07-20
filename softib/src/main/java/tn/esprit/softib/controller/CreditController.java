@@ -45,11 +45,11 @@ public class CreditController {
     }
 
     //Pay Credit
-   /* @PutMapping(value = "/{id}/pay", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "pay/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<String> pay(@PathVariable(value = "id") Integer id) throws Exception {
         return new ResponseEntity<>(paymentService.pay(id), HttpStatus.OK);
-    }*/
+    }
 
     
 }
