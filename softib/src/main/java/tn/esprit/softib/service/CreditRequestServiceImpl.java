@@ -97,17 +97,28 @@ public class CreditRequestServiceImpl implements ICreditRequestService {
     }
 
     @Override
-    public CreditRequest rejectCreditRequest(Integer id) {
-        if (creditRequestRepository.findById(id.longValue()).isPresent()) {
-            CreditRequest creditRequest = creditRequestRepository.findById(id.longValue()).get();
-            if (!creditRequest.getCreditRequestStatus().toString().equals(CreditStatus.CONFIRMED.toString())) {
-                creditRequest.setCreditRequestStatus(CreditStatus.WAITINGFORCLIENTACCEPTANCE);
-                suggestCreditRequest(creditRequest);
-                return creditRequest;
+    public String rejectCreditRequest(Integer id, CreditRequest newCreditRequest) {
+    	if (creditRequestRepository.findById(id.longValue()).isPresent()) {
+            CreditRequest oldCreditRequest = creditRequestRepository.findById(id.longValue()).get();
+            if (oldCreditRequest.getCreditRequestStatus().equals(CreditStatus.CREATED)) {
+            	if (newCreditRequest.getRejectionReason() != null) {
+                oldCreditRequest.setRejectionReason(newCreditRequest.getRejectionReason());
+            } else return "please note rejection reasons";
+            
+            oldCreditRequest.setCreditRequestStatus(CreditStatus.REJECTED);
+            
+            creditRequestRepository.save(oldCreditRequest);
+            return "Credit Request Reject"; 
+            } 
+            else {
+            	return "please check credit request status (should be CREATED)";
             }
+             
+        } else {
+            return "Credit Request Not Found";
         }
-        return null;
     }
+
 
     @Override
     public CreditRequest acceptCreditRequestChanges(Integer id)  {
@@ -115,7 +126,7 @@ public class CreditRequestServiceImpl implements ICreditRequestService {
             CreditRequest creditRequest = creditRequestRepository.findById(id.longValue()).get();
             if (creditRequest.getCreditRequestStatus().toString().equals(CreditStatus.WAITINGFORCLIENTACCEPTANCE.toString())) {
                 creditRequest.setCreditRequestStatus(CreditStatus.ACCEPTED);
-                creditRequest.setRejectionReason(null);
+                creditRequest.setRejectionReason("None");
                 creditRequestRepository.save(creditRequest);
                 return creditRequest;
             }

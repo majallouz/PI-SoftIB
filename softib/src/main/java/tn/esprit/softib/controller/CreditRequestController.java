@@ -24,42 +24,53 @@ public class CreditRequestController {
     IPaymentService paymentService;
 
     
+    //Create Credit Request
     @PostMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<CreditRequest> createCreditRequest(@RequestBody CreditRequest creditRequest, @PathVariable(value = "id") Integer id) throws Exception {
         return new ResponseEntity<>(creditRequestService.addCreditRequest(creditRequest,id), HttpStatus.OK);
     }
 
+    
+    //Delete Credit Request
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<String> deleteCreditRequest(@PathVariable(value = "id") Integer id) throws Exception {
         return new ResponseEntity<>(creditRequestService.deleteCreditRequest(id), HttpStatus.OK);
     }
 
+    //Update Credit Request
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<String> updateCreditRequest(@PathVariable(value = "id") Integer id, @RequestBody CreditRequest creditRequest) throws Exception {
         return new ResponseEntity<>(creditRequestService.updateCreditRequest(id, creditRequest), HttpStatus.OK);
     }
 
+    
+    //Get Credit Request By ID
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<CreditRequest> getCreditRequest(@PathVariable(value = "id") Integer id) throws Exception {
         return new ResponseEntity<>(creditRequestService.getCreditRequest(id), HttpStatus.OK);
     }
 
+    
+    
     @PostMapping(value = "/{id}/create-credit", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Credit> acceptCreditRequest(@PathVariable(value = "id") Integer id) throws Exception {
         return new ResponseEntity<>(creditRequestService.createCreditFromCreditRequest(id), HttpStatus.OK);
     }
 
-    @PutMapping(value = "/{id}/reject", produces = MediaType.APPLICATION_JSON_VALUE)
+    
+    //reject creditRequest
+    @PutMapping(value = "reject/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<CreditRequest> rejectCreditRequest(@PathVariable(value = "id") Integer id) throws Exception {
-        return new ResponseEntity<>(creditRequestService.rejectCreditRequest(id), HttpStatus.OK);
+    public ResponseEntity<String> rejectCreditRequest(@PathVariable(value = "id") Integer id, @RequestBody CreditRequest creditRequest) throws Exception {
+        return new ResponseEntity<>(creditRequestService.rejectCreditRequest(id, creditRequest), HttpStatus.OK);
     }
 
+    
     @PutMapping(value = "/{id}/client-accept", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<CreditRequest> acceptCreditRequestChanges(@PathVariable(value = "id") Integer id) throws Exception {
