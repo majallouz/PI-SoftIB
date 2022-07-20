@@ -93,7 +93,9 @@ public class CreditRequestServiceImpl implements ICreditRequestService {
 
     @Override
     public CreditRequest getCreditRequest(Integer id) {
-        return creditRequestRepository.findById(id.longValue()).get();
+    	if (creditRequestRepository.findById(id.longValue()).isPresent()) {
+    	return creditRequestRepository.findById(id.longValue()).get(); }
+    	else return null ;
     }
 
     @Override
@@ -104,9 +106,7 @@ public class CreditRequestServiceImpl implements ICreditRequestService {
             	if (newCreditRequest.getRejectionReason() != null) {
                 oldCreditRequest.setRejectionReason(newCreditRequest.getRejectionReason());
             } else return "please note rejection reasons";
-            
             oldCreditRequest.setCreditRequestStatus(CreditStatus.REJECTED);
-            
             creditRequestRepository.save(oldCreditRequest);
             return "Credit Request Reject"; 
             } 
@@ -121,17 +121,17 @@ public class CreditRequestServiceImpl implements ICreditRequestService {
 
 
     @Override
-    public CreditRequest acceptCreditRequestChanges(Integer id)  {
-        if (creditRequestRepository.findById(id.longValue()).isPresent()) {
-            CreditRequest creditRequest = creditRequestRepository.findById(id.longValue()).get();
+    public String acceptCreditRequestChanges(Integer id)  {
+    	if (creditRequestRepository.findById(id.longValue()).isPresent()) {
+    		CreditRequest creditRequest = creditRequestRepository.findById(id.longValue()).get();
             if (creditRequest.getCreditRequestStatus().toString().equals(CreditStatus.WAITINGFORCLIENTACCEPTANCE.toString())) {
                 creditRequest.setCreditRequestStatus(CreditStatus.ACCEPTED);
                 creditRequest.setRejectionReason("None");
                 creditRequestRepository.save(creditRequest);
-                return creditRequest;
-            }
+                return "Client Accepted changes susccessfully" ;
+            } else return "please check credit request status (should be WAITING FOR CLIENT ACCEPTANCE";
         }
-        return null;
+    	return "Credit Request Not Found";
     }
 
     @Override

@@ -70,10 +70,10 @@ public class CreditRequestController {
         return new ResponseEntity<>(creditRequestService.rejectCreditRequest(id, creditRequest), HttpStatus.OK);
     }
 
-    
-    @PutMapping(value = "/{id}/client-accept", produces = MediaType.APPLICATION_JSON_VALUE)
+    //Client Confirm credit request
+    @PutMapping(value = "client-accept/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<CreditRequest> acceptCreditRequestChanges(@PathVariable(value = "id") Integer id) throws Exception {
+    public ResponseEntity<String> acceptCreditRequestChanges(@PathVariable(value = "id") Integer id) throws Exception {
         return new ResponseEntity<>(creditRequestService.acceptCreditRequestChanges(id), HttpStatus.OK);
     }
 
