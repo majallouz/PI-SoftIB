@@ -1,6 +1,7 @@
 package tn.esprit.softib.service;
 
 import java.util.Date;
+import java.util.List;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -12,6 +13,7 @@ import tn.esprit.softib.enums.CreditStatus;
 import tn.esprit.softib.enums.TypeCredit;
 import tn.esprit.softib.entity.CreditRequest;
 import tn.esprit.softib.entity.Insurance;
+import tn.esprit.softib.repository.CreditRepository;
 import tn.esprit.softib.repository.CreditRequestRepository;
 import tn.esprit.softib.repository.InsuranceRepository;
 import tn.esprit.softib.utility.SystemDeclarations;
@@ -21,6 +23,9 @@ public class CreditRequestServiceImpl implements ICreditRequestService {
 	
 	@Autowired
     private CreditRequestRepository creditRequestRepository;
+	
+	@Autowired
+	private CreditRepository creditRepository;
 
     @Autowired
     private InsuranceRepository insuranceRepository;
@@ -93,7 +98,9 @@ public class CreditRequestServiceImpl implements ICreditRequestService {
 
     @Override
     public CreditRequest getCreditRequest(Integer id) {
-        return creditRequestRepository.findById(id.longValue()).get();
+    	if (creditRequestRepository.findById(id.longValue()).isPresent()) {
+    	return creditRequestRepository.findById(id.longValue()).get(); }
+    	else return null ;
     }
 
     @Override
@@ -104,9 +111,7 @@ public class CreditRequestServiceImpl implements ICreditRequestService {
             	if (newCreditRequest.getRejectionReason() != null) {
                 oldCreditRequest.setRejectionReason(newCreditRequest.getRejectionReason());
             } else return "please note rejection reasons";
-            
             oldCreditRequest.setCreditRequestStatus(CreditStatus.REJECTED);
-            
             creditRequestRepository.save(oldCreditRequest);
             return "Credit Request Reject"; 
             } 
@@ -121,115 +126,83 @@ public class CreditRequestServiceImpl implements ICreditRequestService {
 
 
     @Override
-    public CreditRequest acceptCreditRequestChanges(Integer id)  {
-        if (creditRequestRepository.findById(id.longValue()).isPresent()) {
-            CreditRequest creditRequest = creditRequestRepository.findById(id.longValue()).get();
+    public String acceptCreditRequestChanges(Integer id)  {
+    	if (creditRequestRepository.findById(id.longValue()).isPresent()) {
+    		CreditRequest creditRequest = creditRequestRepository.findById(id.longValue()).get();
             if (creditRequest.getCreditRequestStatus().toString().equals(CreditStatus.WAITINGFORCLIENTACCEPTANCE.toString())) {
                 creditRequest.setCreditRequestStatus(CreditStatus.ACCEPTED);
                 creditRequest.setRejectionReason("None");
                 creditRequestRepository.save(creditRequest);
-                return creditRequest;
-            }
+                return "Client Accepted changes susccessfully" ;
+            } else return "please check credit request status (should be WAITING FOR CLIENT ACCEPTANCE";
         }
-        return null;
+    	return "Credit Request Not Found";
     }
 
     @Override
-    public Credit createCreditFromCreditRequest(Integer id)  {
-        if (creditRequestRepository.findById(id.longValue()).isPresent()) {
-            CreditRequest creditRequest = creditRequestRepository.findById(id.longValue()).get();
-            if (creditRequest.getCreditRequestStatus().toString().equals(CreditStatus.VALIDATED.toString())) {
+    public String createCreditFromCreditRequest(Integer id)  {
+    	if (creditRequestRepository.findById(id.longValue()).isPresent()) {
+    		CreditRequest creditRequest = creditRequestRepository.findById(id.longValue()).get();
+            if (creditRequest.getCreditRequestStatus().equals(CreditStatus.VALIDATED)) {
                 creditRequest.setCreditRequestStatus(CreditStatus.CONFIRMED);
                 creditRequestRepository.save(creditRequest);
-                return creditService.addCredit(mapCreditFromCreditRequest(creditRequest));
-            }
-        }
-        return null;
+                creditService.addCredit(mapCreditFromCreditRequest(creditRequest));
+                return "Credit CONFIRMED Successfully";
+            } else return "Credit Request status should be VALIDATED to confirm a credit";
+    	} else return "Credit Request Not Found";    	
     }
 
     @Override
     public Credit mapCreditFromCreditRequest(CreditRequest creditRequest) {
         Credit credit = new Credit();
-        credit.setCreditStatus(CreditStatus.CREATED);
+        if (creditRequest.getCreditRequestStatus() != null) {
+        credit.setCreditStatus(creditRequest.getCreditRequestStatus()); 
+        }
+        if (creditRequest.getCreditAmount() != null) {
         credit.setCreditAmount(creditRequest.getCreditAmount());
+        }
+        if (creditRequest.getCreditTerm()!= null) {
         credit.setCreditTerm(creditRequest.getCreditTerm());
+        }
+        if (creditRequest.getCreditRepayment() != null) {
         credit.setCreditRepayment(creditRequest.getCreditRepayment());
+        }
+        if (creditRequest.getCreditRepaymentAmount() != null) {
         credit.setCreditRepaymentAmount(creditRequest.getCreditRepaymentAmount());
+        }
+        if (creditRequest.getType() != null) {
         credit.setType(creditRequest.getType());
+        }
+
+        if (creditRequest != null) {
+        credit.setCreditRequest(creditRequest);
+        }
+       
+        if (creditRequest.getCompte() != null) {
+        credit.setCompte(creditRequest.getCompte());
+        }
+        
         credit.setCreationDate(LocalDate.now());
         credit.setCreditInterest(SystemDeclarations.CREDIT_INTEREST);
         credit.setCreditRepaymentInterest(SystemDeclarations.CREDIT_INTEREST);
         credit.setCreditFees(SystemDeclarations.CREDIT_FEES);
-        credit.setCreditRequest(creditRequest);
         credit.setAgent("BankAgent");
         credit.setReleaseDate(credit.getCreationDate().plusDays(15));
-        credit.setCompte(creditRequest.getCompte());
+        creditRepository.save(credit);
+        
         return credit;
     }
 
     @Override
-    public CreditRequest treatCreditRequest(Integer id) {
+    public String treatCreditRequest(Integer id) {
         if (creditRequestRepository.findById(id.longValue()).isPresent()) {
             CreditRequest creditRequest = creditRequestRepository.findById(id.longValue()).get();
             creditRequest = checkEligibaleCreditRequest(creditRequest);
-            return creditRequestRepository.save(creditRequest);
+            creditRequestRepository.save(creditRequest);
+            return ("Your credit has been "+ creditRequest.getCreditRequestStatus()+ "\n" + "   Rejection Reaseon : " + creditRequest.getRejectionReason());
 
         }
-        return null;
-    }
-
-    @Override
-    public CreditRequest suggestCreditRequest(CreditRequest creditRequest) {
-
-        String rejectionReason = creditRequest.getRejectionReason();
-        if (rejectionReason.contains(SystemDeclarations.CREDIT_INSURANCE_NULL)) {
-            Insurance insurance = new Insurance();
-            insurance.setType(creditRequest.getType());
-            insurance.setCreationDate(new Date());
-            insurance.setAmount(creditRequest.getCreditAmount() * SystemDeclarations.INSURANCE_PERCENTAGE);
-            insurance.setBeneficiary(creditRequest.getCompte().getNomComplet());
-            insuranceRepository.save(insurance);
-            creditRequest.setInsurance(insurance);
-        }
-        if (rejectionReason.contains(SystemDeclarations.CREDIT_CONSUMPTION_CREDIT_TERM_EXCEEDED)) {
-            creditRequest.setCreditTerm(36);
-        }
-        if (rejectionReason.contains(SystemDeclarations.CREDIT_CAR_CREDIT_TERM_EXCEEDED)) {
-            creditRequest.setCreditTerm(87);
-        }
-        if (rejectionReason.contains(SystemDeclarations.CREDIT_HOME_CREDIT_TERM_EXCEEDED)) {
-            creditRequest.setCreditTerm(300);
-        }
-        if (rejectionReason.contains(SystemDeclarations.CREDIT_CONSUMPTION_AMOUNT_EXCEEDED)) {
-            creditRequest.setCreditTerm(20000);
-        }
-        if (rejectionReason.contains(SystemDeclarations.CREDIT_NOT_ENOUGH_SALARY)) {
-            Double creditAmount = creditRequest.getCreditAmount()
-                    + (creditRequest.getCreditAmount() * SystemDeclarations.CREDIT_INTEREST)
-                    + creditRequest.getInsurance().getAmount() + SystemDeclarations.CREDIT_FEES;
-            Double netSalary = creditRequest.getNetSalary();
-            Double amountToPay = 0d;
-            Double possiblePercent = 0d;
-            Integer newCreditTerm = creditRequest.getCreditTerm();
-            boolean check = false;
-            for (int i =creditRequest.getCreditTerm(); i< 36; i++){
-                amountToPay = creditAmount / i;
-                possiblePercent = amountToPay / netSalary;
-                if(possiblePercent <= 0.4){
-                    newCreditTerm = i;
-                    check = true;
-                    break;
-                }
-            }
-            if(check){
-                creditRequest.setCreditTerm(newCreditTerm);
-            }
-            else{
-                creditRequest.setRejectionReason(SystemDeclarations.CREDIT_NOT_POSSIBLE);
-                creditRequest.setCreditRequestStatus(CreditStatus.CLOSED);
-            }
-        }
-        return creditRequestRepository.save(creditRequest);
+        return "Credit Request Not Found";
     }
 
 
@@ -237,10 +210,14 @@ public class CreditRequestServiceImpl implements ICreditRequestService {
     public CreditRequest checkEligibaleCreditRequest(CreditRequest creditRequest) {
         StringBuilder rejectionReason = new StringBuilder();
         boolean check = true;
+        
+        
         if (creditRequest.getInsurance() == null) {
             rejectionReason.append(SystemDeclarations.CREDIT_INSURANCE_NULL);
             check = false;
         }
+        
+        if (creditRequest.getCreditTerm() != null) {
         if (calculateAmountToPayForSalary(creditRequest) >= 0.4) {
             if (rejectionReason.length() > 0) {
                 rejectionReason.append(", ");
@@ -248,6 +225,8 @@ public class CreditRequestServiceImpl implements ICreditRequestService {
             rejectionReason.append(SystemDeclarations.CREDIT_NOT_ENOUGH_SALARY);
             check = false;
         }
+    }
+        if (creditRequest.getType()!= null) {
         if (creditRequest.getType().toString().equals(TypeCredit.CONSUMPTION.toString())) {
             if (creditRequest.getCreditAmount() > 20000) {
                 check = false;
@@ -264,6 +243,9 @@ public class CreditRequestServiceImpl implements ICreditRequestService {
                 rejectionReason.append(SystemDeclarations.CREDIT_CONSUMPTION_CREDIT_TERM_EXCEEDED);
             }
         }
+        
+        
+        
         if (creditRequest.getType().toString().equals(TypeCredit.CAR.toString())) {
             if (creditRequest.getCreditTerm() > 87) {
                 check = false;
@@ -273,6 +255,8 @@ public class CreditRequestServiceImpl implements ICreditRequestService {
                 rejectionReason.append(SystemDeclarations.CREDIT_CAR_CREDIT_TERM_EXCEEDED);
             }
         }
+        
+        
         if (creditRequest.getType().toString().equals(TypeCredit.HOME.toString())) {
             if (creditRequest.getCreditTerm() > 300) {
                 check = false;
@@ -282,6 +266,10 @@ public class CreditRequestServiceImpl implements ICreditRequestService {
                 rejectionReason.append(SystemDeclarations.CREDIT_HOME_CREDIT_TERM_EXCEEDED);
             }
         }
+        
+        }
+        
+        
         if (check) {
             creditRequest.setCreditRequestStatus(CreditStatus.VALIDATED);
             creditRequest.setRejectionReason(null);
@@ -303,14 +291,18 @@ public class CreditRequestServiceImpl implements ICreditRequestService {
             creditAmount = creditRequest.getCreditAmount() + (creditRequest.getCreditAmount() * SystemDeclarations.CREDIT_INTEREST)+ SystemDeclarations.CREDIT_FEES;
 
         }
-        Double netSalary = creditRequest.getNetSalary();
+        if(creditRequest.getNetSalary() != null) {
+        Double netSalary = creditRequest.getNetSalary(); 
         Double amountToPay = creditAmount / creditTerm;
-        return amountToPay / netSalary;
+        return amountToPay / netSalary; }
+        else return null;
     }
 
+    
     @Override
-    public Set<CreditRequest> getAllCreditRequestAcceptedFromClients(){
-        return creditRequestRepository.findAllCreditRequestWithStatus(CreditStatus.ACCEPTED);
+    public List<CreditRequest> getAllCreditRequestAcceptedFromClients(){
+    	List<CreditRequest> credits = creditRequestRepository.findAllCreditRequestWithStatus(CreditStatus.ACCEPTED);
+        return credits ;
     }
 
 }

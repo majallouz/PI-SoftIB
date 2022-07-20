@@ -1,5 +1,6 @@
 package tn.esprit.softib.controller;
 
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,9 +57,10 @@ public class CreditRequestController {
 
     
     
-    @PostMapping(value = "/{id}/create-credit", produces = MediaType.APPLICATION_JSON_VALUE)
+    // create credit from credit request
+    @PostMapping(value = "create-credit/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Credit> acceptCreditRequest(@PathVariable(value = "id") Integer id) throws Exception {
+    public ResponseEntity<String> acceptCreditRequest(@PathVariable(value = "id") Integer id) throws Exception {
         return new ResponseEntity<>(creditRequestService.createCreditFromCreditRequest(id), HttpStatus.OK);
     }
 
@@ -70,23 +72,26 @@ public class CreditRequestController {
         return new ResponseEntity<>(creditRequestService.rejectCreditRequest(id, creditRequest), HttpStatus.OK);
     }
 
-    
-    @PutMapping(value = "/{id}/client-accept", produces = MediaType.APPLICATION_JSON_VALUE)
+    //Client Confirm credit request
+    @PutMapping(value = "client-accept/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<CreditRequest> acceptCreditRequestChanges(@PathVariable(value = "id") Integer id) throws Exception {
+    public ResponseEntity<String> acceptCreditRequestChanges(@PathVariable(value = "id") Integer id) throws Exception {
         return new ResponseEntity<>(creditRequestService.acceptCreditRequestChanges(id), HttpStatus.OK);
     }
 
-    @PutMapping(value = "/{id}/treat", produces = MediaType.APPLICATION_JSON_VALUE)
+    
+    @PutMapping(value = "treat/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<CreditRequest> treatCreditRequest(@PathVariable(value = "id") Integer id) throws Exception {
+    public ResponseEntity<String> treatCreditRequest(@PathVariable(value = "id") Integer id) throws Exception {
         return new ResponseEntity<>(creditRequestService.treatCreditRequest(id), HttpStatus.OK);
     }
 
+    
+    // get all accepted credits requests
     @GetMapping(value = "/client-accepted", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Set<CreditRequest>> getAllCreditRequestAcceptedFromClients() throws Exception {
-        return new ResponseEntity<>(creditRequestService.getAllCreditRequestAcceptedFromClients(), HttpStatus.OK);
+    public ResponseEntity<List<CreditRequest>> getAllCreditRequestAcceptedFromClients() throws Exception {
+        return new ResponseEntity<List<CreditRequest>>(creditRequestService.getAllCreditRequestAcceptedFromClients(), HttpStatus.OK);
     }
 
 }
