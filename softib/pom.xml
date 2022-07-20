@@ -115,7 +115,26 @@
                     </excludes>
                 </configuration>
             </plugin>
+            <plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-compiler-plugin</artifactId>
+  <configuration>
+    <compilerArgument>-XDignore.symbol.file</compilerArgument>
+  </configuration>
+</plugin>
         </plugins>
     </build>
+
+<distributionManagement>
+		<snapshotRepository>
+			<id>repo</id>
+			<url>http://localhost:8081/repository/maven-snapshots/</url>
+		</snapshotRepository>
+		 
+		 <repository>
+			<id>repo</id>
+			<url>http://localhost:8081/repository/maven-releases/</url>
+		</repository>
+	</distributionManagement>
 
 </project>

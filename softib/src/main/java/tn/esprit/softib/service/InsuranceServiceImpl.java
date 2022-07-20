@@ -64,6 +64,7 @@ public class InsuranceServiceImpl implements IInsuranceService {
                 oldInsurance.setBeneficiary(newInsurance.getBeneficiary());
             }
 
+            insuranceRepository.save(oldInsurance);
             return "Insurance Updated Successfully";
         } else {
             return "Insurance Not Found";
