@@ -12,7 +12,7 @@ public interface ICreditRequestService {
 	 public CreditRequest getCreditRequest(Integer id);
 	 public String rejectCreditRequest(Integer id, CreditRequest creditrequest);
 	 public String acceptCreditRequestChanges(Integer id);
-	 public Credit createCreditFromCreditRequest(Integer id);
+	 public String createCreditFromCreditRequest(Integer id);
 	 public Credit mapCreditFromCreditRequest(CreditRequest creditRequest);
 	 public CreditRequest treatCreditRequest(Integer id);
 	 public CreditRequest suggestCreditRequest(CreditRequest creditRequest);

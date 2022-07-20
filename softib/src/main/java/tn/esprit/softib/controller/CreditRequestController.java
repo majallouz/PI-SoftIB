@@ -56,9 +56,9 @@ public class CreditRequestController {
 
     
     
-    @PostMapping(value = "/{id}/create-credit", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "create-credit/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Credit> acceptCreditRequest(@PathVariable(value = "id") Integer id) throws Exception {
+    public ResponseEntity<String> acceptCreditRequest(@PathVariable(value = "id") Integer id) throws Exception {
         return new ResponseEntity<>(creditRequestService.createCreditFromCreditRequest(id), HttpStatus.OK);
     }
 

@@ -12,6 +12,7 @@ import tn.esprit.softib.enums.CreditStatus;
 import tn.esprit.softib.enums.TypeCredit;
 import tn.esprit.softib.entity.CreditRequest;
 import tn.esprit.softib.entity.Insurance;
+import tn.esprit.softib.repository.CreditRepository;
 import tn.esprit.softib.repository.CreditRequestRepository;
 import tn.esprit.softib.repository.InsuranceRepository;
 import tn.esprit.softib.utility.SystemDeclarations;
@@ -21,6 +22,9 @@ public class CreditRequestServiceImpl implements ICreditRequestService {
 	
 	@Autowired
     private CreditRequestRepository creditRequestRepository;
+	
+	@Autowired
+	private CreditRepository creditRepository;
 
     @Autowired
     private InsuranceRepository insuranceRepository;
@@ -135,35 +139,56 @@ public class CreditRequestServiceImpl implements ICreditRequestService {
     }
 
     @Override
-    public Credit createCreditFromCreditRequest(Integer id)  {
-        if (creditRequestRepository.findById(id.longValue()).isPresent()) {
-            CreditRequest creditRequest = creditRequestRepository.findById(id.longValue()).get();
-            if (creditRequest.getCreditRequestStatus().toString().equals(CreditStatus.VALIDATED.toString())) {
+    public String createCreditFromCreditRequest(Integer id)  {
+    	if (creditRequestRepository.findById(id.longValue()).isPresent()) {
+    		CreditRequest creditRequest = creditRequestRepository.findById(id.longValue()).get();
+            if (creditRequest.getCreditRequestStatus().equals(CreditStatus.VALIDATED)) {
                 creditRequest.setCreditRequestStatus(CreditStatus.CONFIRMED);
                 creditRequestRepository.save(creditRequest);
-                return creditService.addCredit(mapCreditFromCreditRequest(creditRequest));
-            }
-        }
-        return null;
+                creditService.addCredit(mapCreditFromCreditRequest(creditRequest));
+                return "Credit CONFIRMED Successfully";
+            } else return "Credit Request status should be VALIDATED to confirm a credit";
+    	} else return "Credit Request Not Found";    	
     }
 
     @Override
     public Credit mapCreditFromCreditRequest(CreditRequest creditRequest) {
         Credit credit = new Credit();
-        credit.setCreditStatus(CreditStatus.CREATED);
+        if (creditRequest.getCreditRequestStatus() != null) {
+        credit.setCreditStatus(creditRequest.getCreditRequestStatus()); 
+        }
+        if (creditRequest.getCreditAmount() != null) {
         credit.setCreditAmount(creditRequest.getCreditAmount());
+        }
+        if (creditRequest.getCreditTerm()!= null) {
         credit.setCreditTerm(creditRequest.getCreditTerm());
+        }
+        if (creditRequest.getCreditRepayment() != null) {
         credit.setCreditRepayment(creditRequest.getCreditRepayment());
+        }
+        if (creditRequest.getCreditRepaymentAmount() != null) {
         credit.setCreditRepaymentAmount(creditRequest.getCreditRepaymentAmount());
+        }
+        if (creditRequest.getType() != null) {
         credit.setType(creditRequest.getType());
+        }
+
+        if (creditRequest != null) {
+        credit.setCreditRequest(creditRequest);
+        }
+       
+        if (creditRequest.getCompte() != null) {
+        credit.setCompte(creditRequest.getCompte());
+        }
+        
         credit.setCreationDate(LocalDate.now());
         credit.setCreditInterest(SystemDeclarations.CREDIT_INTEREST);
         credit.setCreditRepaymentInterest(SystemDeclarations.CREDIT_INTEREST);
         credit.setCreditFees(SystemDeclarations.CREDIT_FEES);
-        credit.setCreditRequest(creditRequest);
         credit.setAgent("BankAgent");
         credit.setReleaseDate(credit.getCreationDate().plusDays(15));
-        credit.setCompte(creditRequest.getCompte());
+        creditRepository.save(credit);
+        
         return credit;
     }
 
