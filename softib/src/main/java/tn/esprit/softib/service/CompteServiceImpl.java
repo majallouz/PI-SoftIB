@@ -7,10 +7,13 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import tn.esprit.softib.Response.ResponseMessage;
 import tn.esprit.softib.entity.Compte;
 import tn.esprit.softib.entity.User;
 import tn.esprit.softib.enums.Nature;
@@ -21,6 +24,8 @@ import tn.esprit.softib.repository.UserRepository;
 public class CompteServiceImpl implements ICompteService {
 	@Autowired
 	CompteRepository compteRepository;
+	@Autowired
+	UserRepository userRepository;
 
 	
 	@Override
@@ -91,6 +96,28 @@ public class CompteServiceImpl implements ICompteService {
 		    newCompte.setData(file.getBytes());
 		    return compteRepository.save(newCompte);
 		  }
+
+
+	@Override
+	public ResponseEntity<ResponseMessage> verifCardType(long id) {
+		// TODO Auto-generated method stub
+		User user = userRepository.getById(id);
+		float salaire = user.getSalaireNet();
+		if(salaire < 1000) {
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("You can get a PINK CARD "
+					+ "with bank limit "+ salaire * 0.2 +" per week"));
+		} else if(salaire < 2500) {
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("You can get a GREEN CARD "
+					+ "with bank limit "+ salaire * 0.2 +" per week"));
+		} else if(salaire < 4500) {
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("You can get a RED CARD "
+					+ "with bank limit "+ salaire * 0.2 +" per week"));
+		} else {
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("You can get a GOLDEN CARD "
+					+ "with bank limit "+ salaire * 0.2 +" per week"));
+		}
+		
+	}
 
 	
 
