@@ -194,68 +194,15 @@ public class CreditRequestServiceImpl implements ICreditRequestService {
     }
 
     @Override
-    public CreditRequest treatCreditRequest(Integer id) {
+    public String treatCreditRequest(Integer id) {
         if (creditRequestRepository.findById(id.longValue()).isPresent()) {
             CreditRequest creditRequest = creditRequestRepository.findById(id.longValue()).get();
             creditRequest = checkEligibaleCreditRequest(creditRequest);
-            return creditRequestRepository.save(creditRequest);
+            creditRequestRepository.save(creditRequest);
+            return ("Your credit has been "+ creditRequest.getCreditRequestStatus()+ "\n" + "   Rejection Reaseon : " + creditRequest.getRejectionReason());
 
         }
-        return null;
-    }
-
-    @Override
-    public CreditRequest suggestCreditRequest(CreditRequest creditRequest) {
-
-        String rejectionReason = creditRequest.getRejectionReason();
-        if (rejectionReason.contains(SystemDeclarations.CREDIT_INSURANCE_NULL)) {
-            Insurance insurance = new Insurance();
-            insurance.setType(creditRequest.getType());
-            insurance.setCreationDate(new Date());
-            insurance.setAmount(creditRequest.getCreditAmount() * SystemDeclarations.INSURANCE_PERCENTAGE);
-            insurance.setBeneficiary(creditRequest.getCompte().getNomComplet());
-            insuranceRepository.save(insurance);
-            creditRequest.setInsurance(insurance);
-        }
-        if (rejectionReason.contains(SystemDeclarations.CREDIT_CONSUMPTION_CREDIT_TERM_EXCEEDED)) {
-            creditRequest.setCreditTerm(36);
-        }
-        if (rejectionReason.contains(SystemDeclarations.CREDIT_CAR_CREDIT_TERM_EXCEEDED)) {
-            creditRequest.setCreditTerm(87);
-        }
-        if (rejectionReason.contains(SystemDeclarations.CREDIT_HOME_CREDIT_TERM_EXCEEDED)) {
-            creditRequest.setCreditTerm(300);
-        }
-        if (rejectionReason.contains(SystemDeclarations.CREDIT_CONSUMPTION_AMOUNT_EXCEEDED)) {
-            creditRequest.setCreditTerm(20000);
-        }
-        if (rejectionReason.contains(SystemDeclarations.CREDIT_NOT_ENOUGH_SALARY)) {
-            Double creditAmount = creditRequest.getCreditAmount()
-                    + (creditRequest.getCreditAmount() * SystemDeclarations.CREDIT_INTEREST)
-                    + creditRequest.getInsurance().getAmount() + SystemDeclarations.CREDIT_FEES;
-            Double netSalary = creditRequest.getNetSalary();
-            Double amountToPay = 0d;
-            Double possiblePercent = 0d;
-            Integer newCreditTerm = creditRequest.getCreditTerm();
-            boolean check = false;
-            for (int i =creditRequest.getCreditTerm(); i< 36; i++){
-                amountToPay = creditAmount / i;
-                possiblePercent = amountToPay / netSalary;
-                if(possiblePercent <= 0.4){
-                    newCreditTerm = i;
-                    check = true;
-                    break;
-                }
-            }
-            if(check){
-                creditRequest.setCreditTerm(newCreditTerm);
-            }
-            else{
-                creditRequest.setRejectionReason(SystemDeclarations.CREDIT_NOT_POSSIBLE);
-                creditRequest.setCreditRequestStatus(CreditStatus.CLOSED);
-            }
-        }
-        return creditRequestRepository.save(creditRequest);
+        return "Credit Request Not Found";
     }
 
 
@@ -263,10 +210,14 @@ public class CreditRequestServiceImpl implements ICreditRequestService {
     public CreditRequest checkEligibaleCreditRequest(CreditRequest creditRequest) {
         StringBuilder rejectionReason = new StringBuilder();
         boolean check = true;
+        
+        
         if (creditRequest.getInsurance() == null) {
             rejectionReason.append(SystemDeclarations.CREDIT_INSURANCE_NULL);
             check = false;
         }
+        
+        if (creditRequest.getCreditTerm() != null) {
         if (calculateAmountToPayForSalary(creditRequest) >= 0.4) {
             if (rejectionReason.length() > 0) {
                 rejectionReason.append(", ");
@@ -274,6 +225,8 @@ public class CreditRequestServiceImpl implements ICreditRequestService {
             rejectionReason.append(SystemDeclarations.CREDIT_NOT_ENOUGH_SALARY);
             check = false;
         }
+    }
+        if (creditRequest.getType()!= null) {
         if (creditRequest.getType().toString().equals(TypeCredit.CONSUMPTION.toString())) {
             if (creditRequest.getCreditAmount() > 20000) {
                 check = false;
@@ -290,6 +243,9 @@ public class CreditRequestServiceImpl implements ICreditRequestService {
                 rejectionReason.append(SystemDeclarations.CREDIT_CONSUMPTION_CREDIT_TERM_EXCEEDED);
             }
         }
+        
+        
+        
         if (creditRequest.getType().toString().equals(TypeCredit.CAR.toString())) {
             if (creditRequest.getCreditTerm() > 87) {
                 check = false;
@@ -299,6 +255,8 @@ public class CreditRequestServiceImpl implements ICreditRequestService {
                 rejectionReason.append(SystemDeclarations.CREDIT_CAR_CREDIT_TERM_EXCEEDED);
             }
         }
+        
+        
         if (creditRequest.getType().toString().equals(TypeCredit.HOME.toString())) {
             if (creditRequest.getCreditTerm() > 300) {
                 check = false;
@@ -308,6 +266,10 @@ public class CreditRequestServiceImpl implements ICreditRequestService {
                 rejectionReason.append(SystemDeclarations.CREDIT_HOME_CREDIT_TERM_EXCEEDED);
             }
         }
+        
+        }
+        
+        
         if (check) {
             creditRequest.setCreditRequestStatus(CreditStatus.VALIDATED);
             creditRequest.setRejectionReason(null);
@@ -329,9 +291,11 @@ public class CreditRequestServiceImpl implements ICreditRequestService {
             creditAmount = creditRequest.getCreditAmount() + (creditRequest.getCreditAmount() * SystemDeclarations.CREDIT_INTEREST)+ SystemDeclarations.CREDIT_FEES;
 
         }
-        Double netSalary = creditRequest.getNetSalary();
+        if(creditRequest.getNetSalary() != null) {
+        Double netSalary = creditRequest.getNetSalary(); 
         Double amountToPay = creditAmount / creditTerm;
-        return amountToPay / netSalary;
+        return amountToPay / netSalary; }
+        else return null;
     }
 
     

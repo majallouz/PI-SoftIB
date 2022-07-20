@@ -15,8 +15,7 @@ public interface ICreditRequestService {
 	 public String acceptCreditRequestChanges(Integer id);
 	 public String createCreditFromCreditRequest(Integer id);
 	 public Credit mapCreditFromCreditRequest(CreditRequest creditRequest);
-	 public CreditRequest treatCreditRequest(Integer id);
-	 public CreditRequest suggestCreditRequest(CreditRequest creditRequest);
+	 public String treatCreditRequest(Integer id);
 	 public CreditRequest checkEligibaleCreditRequest(CreditRequest creditRequest);
 	 public Double calculateAmountToPayForSalary(CreditRequest creditRequest) ;
 	 public List<CreditRequest> getAllCreditRequestAcceptedFromClients();
