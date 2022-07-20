@@ -1,6 +1,7 @@
 package tn.esprit.softib.service;
 
 import java.util.Date;
+import java.util.List;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -333,9 +334,11 @@ public class CreditRequestServiceImpl implements ICreditRequestService {
         return amountToPay / netSalary;
     }
 
+    
     @Override
-    public Set<CreditRequest> getAllCreditRequestAcceptedFromClients(){
-        return creditRequestRepository.findAllCreditRequestWithStatus(CreditStatus.ACCEPTED);
+    public List<CreditRequest> getAllCreditRequestAcceptedFromClients(){
+    	List<CreditRequest> credits = creditRequestRepository.findAllCreditRequestWithStatus(CreditStatus.ACCEPTED);
+        return credits ;
     }
 
 }

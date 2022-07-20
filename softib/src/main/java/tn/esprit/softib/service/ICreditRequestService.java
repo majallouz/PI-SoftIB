@@ -1,5 +1,6 @@
 package tn.esprit.softib.service;
 
+import java.util.List;
 import java.util.Set;
 
 import tn.esprit.softib.entity.Credit;
@@ -18,5 +19,5 @@ public interface ICreditRequestService {
 	 public CreditRequest suggestCreditRequest(CreditRequest creditRequest);
 	 public CreditRequest checkEligibaleCreditRequest(CreditRequest creditRequest);
 	 public Double calculateAmountToPayForSalary(CreditRequest creditRequest) ;
-	 public Set<CreditRequest> getAllCreditRequestAcceptedFromClients();
+	 public List<CreditRequest> getAllCreditRequestAcceptedFromClients();
 }

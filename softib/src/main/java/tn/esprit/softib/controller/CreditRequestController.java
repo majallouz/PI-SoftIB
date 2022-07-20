@@ -1,5 +1,6 @@
 package tn.esprit.softib.controller;
 
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +57,7 @@ public class CreditRequestController {
 
     
     
+    // create credit from credit request
     @PostMapping(value = "create-credit/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<String> acceptCreditRequest(@PathVariable(value = "id") Integer id) throws Exception {
@@ -85,8 +87,8 @@ public class CreditRequestController {
 
     @GetMapping(value = "/client-accepted", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Set<CreditRequest>> getAllCreditRequestAcceptedFromClients() throws Exception {
-        return new ResponseEntity<>(creditRequestService.getAllCreditRequestAcceptedFromClients(), HttpStatus.OK);
+    public ResponseEntity<List<CreditRequest>> getAllCreditRequestAcceptedFromClients() throws Exception {
+        return new ResponseEntity<List<CreditRequest>>(creditRequestService.getAllCreditRequestAcceptedFromClients(), HttpStatus.OK);
     }
 
 }
