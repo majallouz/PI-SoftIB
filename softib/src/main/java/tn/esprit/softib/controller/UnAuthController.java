@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -12,6 +13,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +30,8 @@ import com.itextpdf.text.DocumentException;
 
 import tn.esprit.softib.entity.Compte;
 import tn.esprit.softib.entity.Formulaire;
+import tn.esprit.softib.javamaster.model.MessageModel;
+import tn.esprit.softib.javamaster.storage.UserStorage;
 import tn.esprit.softib.service.ExcelService;
 import tn.esprit.softib.service.ICompteService;
 import tn.esprit.softib.service.IFormulaireService;
@@ -43,6 +49,9 @@ public class UnAuthController {
 	ExcelService fileService;
 	@Autowired
 	ICompteService compteService;
+	 @Autowired
+	    private SimpMessagingTemplate simpMessagingTemplate;
+	
 	
 	@PostMapping("/createFormulaire")
 	@ResponseBody

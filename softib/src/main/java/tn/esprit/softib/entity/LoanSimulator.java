@@ -1,12 +1,13 @@
 package tn.esprit.softib.entity;
 
 import javax.persistence.Column;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import tn.esprit.softib.enums.CreditType;
+import tn.esprit.softib.enums.TypeCredit;
 
 @Entity
 public class LoanSimulator {
@@ -18,7 +19,7 @@ public class LoanSimulator {
 	    private int salary;
 	    private double intrestRate;
 	    private double months;
-	    private CreditType type;
+	    private TypeCredit type;
 
 
 	    public LoanSimulator() {
@@ -64,11 +65,11 @@ public class LoanSimulator {
 	        this.months = months;
 	    }
 
-	    public CreditType getType() {
+	    public TypeCredit getType() {
 	        return type;
 	    }
 
-	    public void setType(CreditType type) {
+	    public void setType(TypeCredit type) {
 	        this.type = type;
 	    }
 	}
