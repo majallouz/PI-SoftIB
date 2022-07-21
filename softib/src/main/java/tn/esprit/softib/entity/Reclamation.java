@@ -2,7 +2,9 @@ package tn.esprit.softib.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import tn.esprit.softib.enums.ReclamationStatus;
 
 import javax.persistence.*;
@@ -14,6 +16,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Getter
+@Setter
 @Table(name = "reclamation")
 public class Reclamation implements Serializable {
 	
@@ -40,4 +44,6 @@ public class Reclamation implements Serializable {
     public boolean isReclamationClosed() {
         return (ReclamationStatus.CLOSED.equals(this.status));
     }
+    
+
 }

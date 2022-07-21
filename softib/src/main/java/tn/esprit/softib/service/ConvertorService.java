@@ -2,6 +2,7 @@ package tn.esprit.softib.service;
 
 import java.math.BigDecimal;
 
+
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;
 import javax.money.MonetaryAmount;
@@ -19,7 +20,7 @@ public class ConvertorService {
 	@Autowired
 	private ConvertorRepository accountPromotionsRespository;
 	public MonetaryAmount convert(String currentCurrency, String targetCurrency, BigDecimal amount) {
-        // According to the currency code to get the currency unit
+        
         CurrencyUnit currentCurrencyUnit = Monetary.getCurrency(currentCurrency);
         CurrencyUnit targetCurrencyUnit = Monetary.getCurrency(targetCurrency);
 

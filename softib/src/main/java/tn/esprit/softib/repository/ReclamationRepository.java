@@ -9,4 +9,5 @@ import java.util.List;
 
 public interface ReclamationRepository extends JpaRepository<Reclamation, Long>{
 	  List<Reclamation> findAllByStatus(ReclamationStatus reclamationStatus);
+	  
 }

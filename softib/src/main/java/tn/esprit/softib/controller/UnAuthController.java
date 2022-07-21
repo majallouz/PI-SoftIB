@@ -91,5 +91,31 @@ public class UnAuthController {
    				Compte compte = compteService.getCompteById(id);
    		        return ResponseEntity.status(HttpStatus.OK).body(QRCodeGenerator.getQRCodeImage(compte.getRib(), width, height));
    		    }
+
+	
+	 @GetMapping("/registration/{userName}")
+	    public ResponseEntity<Void> register(@PathVariable String userName) {
+	        System.out.println("handling register user request: " + userName);
+	        try {
+	            UserStorage.getInstance().setUser(userName);
+	        } catch (Exception e) {
+	            return ResponseEntity.badRequest().build();
+	        }
+	        return ResponseEntity.ok().build();
+	    }
+
+	    @GetMapping("/fetchAllUsers")
+	    public Set<String> fetchAll() {
+	        return UserStorage.getInstance().getUsers();
+	    }
+	
+    @MessageMapping("/chat/{to}")
+    public void sendMessage(@DestinationVariable String to, MessageModel message) {
+        System.out.println("handling send message: " + message + " to: " + to);
+        boolean isExists = UserStorage.getInstance().getUsers().contains(to);
+        if (isExists) {
+            simpMessagingTemplate.convertAndSend("/topic/messages/" + to, message);
+        }
+}
 	
 }
