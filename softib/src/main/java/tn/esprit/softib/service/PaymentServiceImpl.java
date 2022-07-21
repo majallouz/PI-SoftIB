@@ -15,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import tn.esprit.softib.repository.PaymentRepository;
 import tn.esprit.softib.utility.SystemDeclarations;
 import tn.esprit.softib.entity.Credit;
+import tn.esprit.softib.entity.CreditRequest;
+import tn.esprit.softib.entity.Insurance;
 import tn.esprit.softib.entity.Operation;
 import tn.esprit.softib.entity.Payment;
 import tn.esprit.softib.entity.Transaction;
@@ -36,11 +38,7 @@ public class PaymentServiceImpl implements IPaymentService {
     private CompteServiceImpl CompteService;
  
 
-    @Override
-    public Payment addPayment(Payment payment)  {
-        payment.setCreationDate(LocalDate.now());
-        return paymentRepository.save(payment);
-    }
+    
 
     @Override
     public String deletePayment(Integer id)  {
