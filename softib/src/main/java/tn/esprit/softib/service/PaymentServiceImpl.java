@@ -94,6 +94,7 @@ public class PaymentServiceImpl implements IPaymentService {
             {
                 Set<Payment> payments = paymentRepository.findAllNotPayedPayments(credit, CreditStatus.CREATED);
                 
+                if(credit.getCreditTerm() != null ) {
                 if(!payments.isEmpty()) {
                     
                 	Iterator<Payment> paymentIterator = payments.iterator();
@@ -126,12 +127,17 @@ public class PaymentServiceImpl implements IPaymentService {
                     return ("Payment for the date "+ payment.getPaymentDueDate()+ " of "+ payment.getPaymentAmount() + " is "+payment.getPaymentStatus().toString()+ " With Interest "+payment.getPaymentInterest());
                 }
                 else {
-                	log.warn("list of payment is empty");
+                	log.warn("list of payment is empty" );
                     return ("List Of Payment Is Empty");
                 }
             }
             else {
-                return ("Credit Payed");
+            	Double RA = credit.getRemainingAmount() ;
+            	Double remaining = RA - 100.0 ;
+            	credit.setRemainingAmount(remaining);
+            	CreditRepository.save(credit);
+                return ("Your credit Remaining Amount after payment " + remaining);
+            }
             }
         } else 
         	log.warn("you have to specify a credit status");
