@@ -3,6 +3,7 @@ package tn.esprit.softib.controller;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -50,9 +51,13 @@ import tn.esprit.softib.Response.CompteResponse;
 import tn.esprit.softib.Response.ResponseMessage;
 import tn.esprit.softib.component.EmailServiceImpl;
 import tn.esprit.softib.entity.Compte;
+import tn.esprit.softib.entity.User;
+import tn.esprit.softib.enums.CreditStatus;
 import tn.esprit.softib.repository.CompteRepository;
 import tn.esprit.softib.service.ICompteService;
+import tn.esprit.softib.service.IUserService;
 import tn.esprit.softib.util.GeneratePdfReport;
+import tn.esprit.softib.util.QRCodeGenerator;
 
 
 @RestController
@@ -67,11 +72,25 @@ public class CompteController {
 	@Autowired
 	CompteRepository compteRepository;
 	@Autowired
+	IUserService userservice;
+	@Autowired
     private JobLauncher jobLauncher;
 	 @Autowired
 	    @Qualifier("emailSenderJob")
 	    private Job emailSenderJob;
-	
+	 
+	 private static final String QR_CODE_IMAGE_PATH = "./Files/QRCode.png";
+	 
+	 	//create compte after create user (to affect a compte to a user)
+		@PostMapping("/save/{id}")
+		@ResponseBody
+		@PreAuthorize("hasRole('ADMIN')")
+		public Compte save(@RequestBody Compte compte,@PathVariable("id") Long id){
+			compte.setUser(userservice.getUserById(id));
+			Compte compteResult = compteService.addCompte(compte);
+			return compteResult;
+		}
+		
 	@GetMapping("/findAll")
 	@ResponseBody
 	@PreAuthorize("hasRole('ADMIN')")
@@ -88,18 +107,11 @@ public class CompteController {
 		return compte;
 	}
 	
-	@PostMapping("/save")
-	@ResponseBody
-	@PreAuthorize("hasRole('ADMIN')")
-	public Compte save(@RequestBody Compte compte){
-		Compte compteResult = compteService.addCompte(compte);
-		return compteResult;
-	}
 	
 	@PutMapping("/update")
 	@ResponseBody
 	@PreAuthorize("hasRole('ADMIN')")
-	public Compte update(@RequestBody Compte compte){
+	public ResponseEntity<ResponseMessage> update(@RequestBody Compte compte){
 		return compteService.updateCompte(compte);
 	}
 	
@@ -107,8 +119,8 @@ public class CompteController {
 	@DeleteMapping("/delete/{id}")
 	@ResponseBody
 	@PreAuthorize("hasRole('ADMIN')")
-	public void delete(@PathVariable("id") Long id){
-		compteService.deleteCompte(id);
+	public  ResponseEntity<ResponseMessage> delete(@PathVariable("id") Long id){
+		return compteService.deleteCompte(id);
 	}
 	
     @GetMapping("/count")
@@ -124,10 +136,19 @@ public class CompteController {
 
         return  ResponseEntity.status(HttpStatus.OK).body(response);
     }
+    
+	@GetMapping("/statistique")
+	public List<Compte> getStatistique() {
+
+		List<Compte> listF =compteService.getSatatistiqueParSalaire();
+
+
+		return listF;
+	}
 	
 	
     @GetMapping("/test")
-    public ResponseEntity<ResponseMessage> getAllCompte() {
+    public ResponseEntity<ResponseMessage> simpleEmail() {
         try {
             emailService.sendSimpleMessage("boutrifyasmine55@gmail.com", "This is the message", "Thank you for registering with us");
         } catch (SendFailedException sendFailedException) {
@@ -190,6 +211,7 @@ public class CompteController {
       }
     }
 
+    //test this dans unauth
     
     @RequestMapping(value = "/pdfreport/{id}", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_PDF_VALUE)
@@ -251,6 +273,29 @@ public class CompteController {
     		@PathVariable("id") long id) {
         return compteService.verifCardType(id);
     }
+    
+	
+
+	
+    @GetMapping(value = "/genrateAndDownloadQRCode/{id}/{width}/{height}")
+		public void download(
+				@PathVariable("id") long id,
+				@PathVariable("width") Integer width,
+				@PathVariable("height") Integer height)
+			    throws Exception {
+    				Compte compte = compteService.getCompteById(id);
+			        QRCodeGenerator.generateQRCodeImage(compte.getRib(), width, height, QR_CODE_IMAGE_PATH);
+			    }
+//essayer le path uauth
+    @GetMapping(value = "/genrateQRCode/{id}/{width}/{height}")
+   	public ResponseEntity<byte[]> generateQRCode(
+   			@PathVariable("id") long id,
+   			@PathVariable("width") Integer width,
+   			@PathVariable("height") Integer height)
+   		    throws Exception {
+   				Compte compte = compteService.getCompteById(id);
+   		        return ResponseEntity.status(HttpStatus.OK).body(QRCodeGenerator.getQRCodeImage(compte.getRib(), width, height));
+   		    }
     
     
     

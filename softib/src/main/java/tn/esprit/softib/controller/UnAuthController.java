@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,6 +30,7 @@ import tn.esprit.softib.service.ExcelService;
 import tn.esprit.softib.service.ICompteService;
 import tn.esprit.softib.service.IFormulaireService;
 import tn.esprit.softib.util.GeneratePdfReport;
+import tn.esprit.softib.util.QRCodeGenerator;
 
 @RestController
 @RequestMapping("/api/unauth")
@@ -49,6 +51,10 @@ public class UnAuthController {
 		Formulaire form = formulaireService.addFormulaire(formulaire);
 		return form;
 	}
+	
+	/*
+	 * Yasmine Boutrif
+	 * */
 	
     @RequestMapping(value = "/pdfreport/{id}", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_PDF_VALUE)
@@ -73,5 +79,17 @@ public class UnAuthController {
                 .body(new InputStreamResource(bis));
         
     }
+    /*
+     * Yasmine Boutrif
+     * */
+    @GetMapping(value = "/genrateQRCode/{id}/{width}/{height}")
+   	public ResponseEntity<byte[]> generateQRCode(
+   			@PathVariable("id") long id,
+   			@PathVariable("width") Integer width,
+   			@PathVariable("height") Integer height)
+   		    throws Exception {
+   				Compte compte = compteService.getCompteById(id);
+   		        return ResponseEntity.status(HttpStatus.OK).body(QRCodeGenerator.getQRCodeImage(compte.getRib(), width, height));
+   		    }
 	
 }

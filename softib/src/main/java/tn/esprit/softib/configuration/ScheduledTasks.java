@@ -23,7 +23,9 @@ public class ScheduledTasks {
 	//@Scheduled(cron = "0 12 0 * * THU")
 	@Scheduled(cron = "0 */2 * ? * *")
 	public void reportCurrentTime() {
+		log.info("Job Spring Scheduler started");
 		icardRequest.deleteAutoCard();
+		log.info("Card rejected Deleted sucessfuly !");
 		log.info("The time is now {}", dateFormat.format(new Date()));
 	}
 

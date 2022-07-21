@@ -35,12 +35,29 @@ public class CardRequestController {
 	ICardRequest icardRequest;
 	
 	
+	@PostMapping("/save")
+	@ResponseBody
+	@PreAuthorize("hasRole('ADMIN') or hasRole('CLIENT') or hasRole('AGENT')")
+	public CardRequest add(@RequestBody CardRequest newCard) {
+		newCard.setFormStatus(FormStatus.PENDING);
+		return icardRequest.addCardRequest(newCard);
+	}
+	
 	@GetMapping("/findAll")
 	@ResponseBody
 	@PreAuthorize("hasRole('ADMIN')")
 	public List<CardRequest> findAll() {
 		List<CardRequest> cardRequests = (List<CardRequest>) icardRequest.getAllCardRequests();
 		return cardRequests;
+	}
+	
+	
+	@GetMapping("/findById/{id}")
+	@ResponseBody
+	@PreAuthorize("hasRole('ADMIN')")
+	public CardRequest findById(@PathVariable("id") Long id) {
+		CardRequest cardRequest = icardRequest.getCardRequestById(id);
+		return cardRequest;
 	}
 
 	
@@ -50,38 +67,6 @@ public class CardRequestController {
 	public CardRequest findByRib(@PathVariable("rib") String rib) {
 		CardRequest cardRequest = icardRequest.getCardRequestByRib(rib);
 		return cardRequest;
-	}
-	
-
-	@GetMapping("/findById/{id}")
-	@ResponseBody
-	@PreAuthorize("hasRole('ADMIN')")
-	public CardRequest findById(@PathVariable("id") Long id) {
-		CardRequest cardRequest = icardRequest.getCardRequestById(id);
-		return cardRequest;
-	}
-
-	@DeleteMapping("/delete/{id}")
-	@ResponseBody
-	@PreAuthorize("hasRole('ADMIN')")
-	public void delete(@PathVariable("id") Long id) {
-		icardRequest.deleteCardRequest(id);
-	}
-
-	@PutMapping("/update")
-	@ResponseBody
-	@PreAuthorize("hasRole('ADMIN')")
-	public CardRequest updateController(@RequestBody CardRequest newCardRequest) {
-		newCardRequest.setFormStatus(FormStatus.PENDING);
-		return icardRequest.updateCardRequest(newCardRequest);
-	}
-	
-	@PostMapping("/save")
-	@ResponseBody
-	@PreAuthorize("hasRole('ADMIN') or hasRole('CLIENT') or hasRole('AGENT')")
-	public CardRequest add(@RequestBody CardRequest newCard) {
-		newCard.setFormStatus(FormStatus.PENDING);
-		return icardRequest.addCardRequest(newCard);
 	}
 	
 	@PostMapping("/confirmCardRequest/{id}")
@@ -95,6 +80,24 @@ public class CardRequestController {
 			return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new MessageResponse(confMsg.getMessage()));
 		}
 		
+	}
+	
+	
+	@PutMapping("/update")
+	@ResponseBody
+	@PreAuthorize("hasRole('ADMIN')")
+	public CardRequest updateController(@RequestBody CardRequest newCardRequest) {
+		newCardRequest.setFormStatus(FormStatus.PENDING);
+		return icardRequest.updateCardRequest(newCardRequest);
+	}
+	
+
+
+	@DeleteMapping("/delete/{id}")
+	@ResponseBody
+	@PreAuthorize("hasRole('ADMIN')")
+	public void delete(@PathVariable("id") Long id) {
+		icardRequest.deleteCardRequest(id);
 	}
 	
 	@PostMapping("/rejectRequestCard/{id}")
@@ -117,6 +120,9 @@ public class CardRequestController {
 	        return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
 	      }
 	    }
+
+
+	
 
 
 	
