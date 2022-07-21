@@ -5,11 +5,13 @@ import java.util.Set;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Iterator;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.xmlbeans.impl.values.XmlValueOutOfRangeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import lombok.extern.slf4j.Slf4j;
 import tn.esprit.softib.repository.PaymentRepository;
 import tn.esprit.softib.utility.SystemDeclarations;
 import tn.esprit.softib.entity.Credit;
@@ -21,6 +23,7 @@ import tn.esprit.softib.repository.CreditRepository;
 import tn.esprit.softib.repository.InsuranceRepository;
 
 @Service
+@Slf4j
 public class PaymentServiceImpl implements IPaymentService {
 	
 	@Autowired
@@ -125,13 +128,16 @@ public class PaymentServiceImpl implements IPaymentService {
                     return ("Payment for the date "+ payment.getPaymentDueDate()+ " of "+ payment.getPaymentAmount() + " is "+payment.getPaymentStatus().toString()+ " With Interest "+payment.getPaymentInterest());
                 }
                 else {
+                	log.warn("list of payment is empty");
                     return ("List Of Payment Is Empty");
                 }
             }
             else {
                 return ("Credit Payed");
             }
-        } else return ("Please specify a Credit Status");
+        } else 
+        	log.warn("you have to specify a credit status");
+        	return ("Please specify a Credit Status");
         }
         else {
             return ("Credit Not Found");

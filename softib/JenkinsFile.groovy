@@ -1,14 +1,14 @@
 pipeline {
     agent any
     environment {
-    registry = "mgara07"
-    registryCredential = 'dockerHub'
+    registry = "mgara07/softib"
+    registryCredential = 'DockerHub'
     dockerImage = ''
   }
     stages {
          stage('clone and clean repo') {
             steps {
-                git changelog: false, branch: 'master',  credentialsId: 'mgara07', poll: false, url: 'https://github.com/majallouz/PI-SoftIB.git'
+                git changelog: false, branch: 'master',  credentialsId: 'mgara07', poll: false, url: 'https://github.com/mgara07/softib'
                 
             }
         }
