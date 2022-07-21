@@ -46,12 +46,23 @@ public class InsuranceServiceImpl implements IInsuranceService {
 
     @Override
     public String deleteInsurance(Integer id)  {
-        if (insuranceRepository.findById(id.longValue()).isPresent()) {
-            insuranceRepository.deleteById(id.longValue());
-            return "Insurance Deleted Successfully";
-        } else
-            return "Insurance Not Found";
+    	
+    if(insuranceRepository.findById(id.longValue()).isPresent()){
+    	Insurance InsuranceDelete = insuranceRepository.findById(id.longValue()).get();
+    
+    	if (InsuranceDelete.getCreditRequest()!= null) {
+        CreditRequest creditRequest = InsuranceDelete.getCreditRequest();
+        creditRequest.setInsurance(null);
+        creditRequestRepository.save(creditRequest);
+        log.info("Delete Insurance from Credit Request"); 
     }
+    	insuranceRepository.deleteById(id.longValue());
+        return "Insurance Deleted Successfully";
+    } 
+    log.error("Insurance does not exist");
+    return "Insurance does not exist" ;
+    
+}
 
     @Override
     public String updateInsurance(Integer id, Insurance newInsurance)  {
