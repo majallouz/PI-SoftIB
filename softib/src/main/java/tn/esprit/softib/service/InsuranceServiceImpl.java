@@ -2,7 +2,7 @@ package tn.esprit.softib.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import lombok.extern.slf4j.Slf4j;
 
 import tn.esprit.softib.entity.CreditRequest;
 import tn.esprit.softib.entity.Insurance;
@@ -10,9 +10,11 @@ import tn.esprit.softib.repository.CreditRequestRepository;
 import tn.esprit.softib.repository.InsuranceRepository;
 import tn.esprit.softib.utility.SystemDeclarations;
 
+import java.text.MessageFormat;
 import java.util.Date;
 
 @Service
+@Slf4j
 public class InsuranceServiceImpl implements IInsuranceService {
 	
 	
@@ -33,9 +35,13 @@ public class InsuranceServiceImpl implements IInsuranceService {
             creditRequest.setInsurance(insurance);
             insuranceRepository.save(insurance);
             creditRequestRepository.save(creditRequest);
+            log.info("Insurance With Amount "+ insurance.getAmount() +" Added To Credit Request Successfully");
             return "Insurance With Amount "+ insurance.getAmount() +" Added To Credit Request Successfully";
+            
         }
+        log.error("Insurance Cannot Be Added : Credit Request Not Found");
         return "Insurance Cannot Be Added : Credit Request Not Found";
+        
     }
 
     @Override
