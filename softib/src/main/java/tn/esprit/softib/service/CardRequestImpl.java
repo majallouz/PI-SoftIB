@@ -105,9 +105,16 @@ public class CardRequestImpl implements ICardRequest {
 								+NEW_LINE 
 								+NEW_LINE 
 								+THANK_YOU);
-				 Twilio.init("AC18b21c0d3b07e651078606d3ed337540", "fe7456087dcd8c473c7bc22ec3678c03");   
-	             Message.creator(new PhoneNumber("+21629407444"),
-	                            new PhoneNumber("+19707143507"), WELCOME_TO_SOFTIB + SEPARATOR +
+				// Twilio.init("AC18b21c0d3b07e651078606d3ed337540", "fe7456087dcd8c473c7bc22ec3678c03"); 
+				Twilio.init("AC42557a52bc3464b537d56d6fb195f109", "a4ca8266fc5d1506af874c3c46e9c3de");
+		           
+
+	                Message.creator(new PhoneNumber("+21629407444"),
+	                               new PhoneNumber("+12693714672"),
+	                          
+	           //  Message.creator(new PhoneNumber("+21629407444"),
+	               //             new PhoneNumber("+19707143507")
+	                 WELCOME_TO_SOFTIB + SEPARATOR +
 						HELLO + user.getFirstName() + ESPACE + user.getLastName() +SEPARATOR
 								+NEW_LINE
 								+NEW_LINE

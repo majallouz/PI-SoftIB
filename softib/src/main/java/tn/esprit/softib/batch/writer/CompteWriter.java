@@ -17,6 +17,15 @@ public class CompteWriter implements ItemWriter<Compte> {
 	    @Override
 	    public void write(List<? extends Compte> list) throws Exception {
 	      log.debug("item writer: {}", list.get(0));
+	      List<Compte> comptes = compteRepository.findAll();
+	      for(Compte compte : comptes) {
+	    	  for(Compte item : list ) {
+	    		  if(item.getId()==compte.getId()) {
+	    			  item.setNatureCompte(compte.getNatureCompte());
+	    			  item.setUser(compte.getUser());
+	    		  }
+	    	  }
+	      }
 	      compteRepository.saveAllAndFlush(list);
 	    }
 
