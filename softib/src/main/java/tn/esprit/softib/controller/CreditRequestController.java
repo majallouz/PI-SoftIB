@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import tn.esprit.softib.dto.CreditRequestDTO;
 import tn.esprit.softib.entity.Credit;
 import tn.esprit.softib.entity.CreditRequest;
 import tn.esprit.softib.service.ICreditRequestService;
@@ -28,8 +29,9 @@ public class CreditRequestController {
     //Create Credit Request
     @PostMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<CreditRequest> createCreditRequest(@RequestBody CreditRequest creditRequest, @PathVariable(value = "id") Integer id) throws Exception {
-        return new ResponseEntity<>(creditRequestService.addCreditRequest(creditRequest,id), HttpStatus.OK);
+    public ResponseEntity<CreditRequest> createCreditRequest(@RequestBody CreditRequestDTO dto, @PathVariable(value = "id") Integer id) throws Exception {
+        CreditRequest creditRequest = new CreditRequest(dto);
+    	return new ResponseEntity<>(creditRequestService.addCreditRequest(creditRequest,id), HttpStatus.OK);
     }
 
     
@@ -43,8 +45,9 @@ public class CreditRequestController {
     //Update Credit Request
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> updateCreditRequest(@PathVariable(value = "id") Integer id, @RequestBody CreditRequest creditRequest) throws Exception {
-        return new ResponseEntity<>(creditRequestService.updateCreditRequest(id, creditRequest), HttpStatus.OK);
+    public ResponseEntity<String> updateCreditRequest(@PathVariable(value = "id") Integer id, @RequestBody CreditRequestDTO dto) throws Exception {
+    	CreditRequest creditRequest = new CreditRequest(dto);
+    	return new ResponseEntity<>(creditRequestService.updateCreditRequest(id, creditRequest), HttpStatus.OK);
     }
 
     
@@ -68,8 +71,9 @@ public class CreditRequestController {
     //reject creditRequest
     @PutMapping(value = "reject/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> rejectCreditRequest(@PathVariable(value = "id") Integer id, @RequestBody CreditRequest creditRequest) throws Exception {
-        return new ResponseEntity<>(creditRequestService.rejectCreditRequest(id, creditRequest), HttpStatus.OK);
+    public ResponseEntity<String> rejectCreditRequest(@PathVariable(value = "id") Integer id, @RequestBody CreditRequestDTO dto) throws Exception {
+    	CreditRequest creditRequest = new CreditRequest(dto);
+    	return new ResponseEntity<>(creditRequestService.rejectCreditRequest(id, creditRequest), HttpStatus.OK);
     }
 
     //Client Confirm credit request

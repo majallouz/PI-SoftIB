@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import tn.esprit.softib.Response.ResponseMessage;
+import tn.esprit.softib.dto.CardRequestDTO;
 import tn.esprit.softib.entity.Card;
 import tn.esprit.softib.entity.CardRequest;
 import tn.esprit.softib.entity.ConfirmationMessage;
@@ -37,7 +38,8 @@ public class CardRequestController {
 	@PostMapping("/save")
 	@ResponseBody
 	@PreAuthorize("hasRole('ADMIN') or hasRole('CLIENT') or hasRole('AGENT')")
-	public CardRequest add(@RequestBody CardRequest newCard) {
+	public CardRequest add(@RequestBody CardRequestDTO dto) {
+		CardRequest newCard = new CardRequest(dto);
 		newCard.setFormStatus(FormStatus.PENDING);
 		return icardRequest.addCardRequest(newCard);
 	}
@@ -85,7 +87,8 @@ public class CardRequestController {
 	@PutMapping("/update")
 	@ResponseBody
 	@PreAuthorize("hasRole('ADMIN')")
-	public CardRequest updateController(@RequestBody CardRequest newCardRequest) {
+	public CardRequest updateController(@RequestBody CardRequestDTO dto) {
+		CardRequest newCardRequest = new CardRequest(dto);
 		newCardRequest.setFormStatus(FormStatus.PENDING);
 		return icardRequest.updateCardRequest(newCardRequest);
 	}

@@ -11,6 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import tn.esprit.softib.dto.CreditDTO;
 import tn.esprit.softib.enums.CreditStatus;
 import tn.esprit.softib.enums.TypeCredit;
 import tn.esprit.softib.utility.SystemDeclarations;
@@ -49,6 +50,31 @@ public class Credit implements Serializable{
     private CreditRequest creditRequest;
 	@ManyToOne
 	private Compte compte;
+	
+	
+	public Credit(CreditDTO dto) {
+		super();
+		this.id = dto.getId();
+		this.creationDate = dto.getCreationDate();
+		this.creditStatus = dto.getCreditStatus();
+		this.creditTerm = dto.getCreditTerm();
+		this.creditAmount = dto.getCreditAmount();
+		this.creditRepayment = dto.getCreditRepayment();
+		this.creditRepaymentAmount = dto.getCreditRepaymentAmount();
+		this.creditRepaymentInterest = dto.getCreditRepaymentInterest();
+		this.creditInterest = dto.getCreditInterest();
+		this.creditFees = dto.getCreditFees();
+		this.releaseDate = dto.getReleaseDate();
+		this.agent = dto.getAgent();
+		this.type = dto.getType();
+		this.payedAmount = dto.getPayedAmount();
+		this.remainingAmount = dto.getRemainingAmount();
+		this.payments = dto.getPayments();
+		this.creditRequest = dto.getCreditRequest();
+		this.compte = dto.getCompte();
+	}
+	
+	
 	
 	
 

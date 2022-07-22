@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import tn.esprit.softib.dto.CardDTO;
 import tn.esprit.softib.entity.Card;
 import tn.esprit.softib.entity.CardRequest;
 import tn.esprit.softib.service.ICard;
@@ -55,13 +56,15 @@ public class CardController {
 	@PutMapping("/update")
 	@ResponseBody
 	@PreAuthorize("hasRole('ADMIN')")
-	public Card update(@RequestBody Card newCredit) {
+	public Card update(@RequestBody CardDTO dto) {
+		Card newCredit = new Card (dto);
 		return icard.updateCard(newCredit);
 	}
 	@PostMapping("/save")
 	@ResponseBody
 	@PreAuthorize("hasRole('ADMIN')")
-	public Card add(@RequestBody Card newCredit) {
+	public Card add(@RequestBody CardDTO dto) {
+		Card newCredit = new Card (dto);
 		return icard.addCard(newCredit);
 	}
 

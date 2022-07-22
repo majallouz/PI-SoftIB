@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import tn.esprit.softib.dto.PaymentDTO;
 import tn.esprit.softib.enums.CreditStatus;
 import tn.esprit.softib.utility.SystemDeclarations;
 
@@ -38,5 +39,20 @@ public class Payment {
     private Credit credit;
     private Double penality;
     private CreditStatus paymentStatus;
+    
+	public Payment(PaymentDTO dto) {
+		super();
+		this.id = dto.getId();
+		this.creationDate = dto.getCreationDate();
+		this.paymentDate = dto.getPaymentDate();
+		this.paymentDueDate = dto.getPaymentDueDate();
+		this.paymentAmount = dto.getPaymentAmount();
+		this.paymentInterest = dto.getPaymentInterest();
+		this.credit = dto.getCredit();
+		this.penality = dto.getPenality();
+		this.paymentStatus = dto.getPaymentStatus();
+	}
+    
+    
 
 }

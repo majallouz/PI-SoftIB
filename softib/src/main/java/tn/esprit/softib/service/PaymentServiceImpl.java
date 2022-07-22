@@ -5,6 +5,8 @@ import java.util.Set;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Optional;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.xmlbeans.impl.values.XmlValueOutOfRangeException;
@@ -51,8 +53,9 @@ public class PaymentServiceImpl implements IPaymentService {
 
     @Override
     public String updatePayment(Integer id, Payment newPayment) {
-        if (paymentRepository.findById(id.longValue()).isPresent()) {
-            Payment oldPayment = paymentRepository.findById(id.longValue()).get();
+    	Optional<Payment> value = this.paymentRepository.findById(id.longValue());
+        if (value.isPresent()) {
+            Payment oldPayment = value.get();
             if (newPayment.getPaymentAmount() != null) {
                 oldPayment.setPaymentAmount(newPayment.getPaymentAmount());
             }
@@ -87,8 +90,9 @@ public class PaymentServiceImpl implements IPaymentService {
     @Override
     public String pay(Integer creditId){
         StringBuilder msg = new StringBuilder();
-        if (CreditRepository.findById(creditId.longValue()).isPresent()) {
-            Credit credit = CreditRepository.findById(creditId.longValue()).get();
+        Optional<Credit> value = this.CreditRepository.findById(creditId.longValue());
+        if (value.isPresent()) {
+            Credit credit = value.get();
             if (credit.getCreditStatus() != null) {
             if(!credit.getCreditStatus().equals(CreditStatus.PAYED))
             {

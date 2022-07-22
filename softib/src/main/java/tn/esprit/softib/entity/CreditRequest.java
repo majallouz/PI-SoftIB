@@ -10,6 +10,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import tn.esprit.softib.dto.CreditDTO;
+import tn.esprit.softib.dto.CreditRequestDTO;
 import tn.esprit.softib.enums.CreditStatus;
 import tn.esprit.softib.enums.TypeCredit;
 
@@ -52,5 +54,30 @@ public class CreditRequest implements Serializable{
     @JoinColumn(name = "account_id")
     private Compte compte;
 	
+    public CreditRequest(CreditRequestDTO dto) {
+		super();
+		this.id = dto.getId();
+		this.cin = dto.getCin();
+		this.age = dto.getAge();
+		this.job = dto.getJob();
+		this.civilState = dto.getCivilState();
+		this.creationDate = dto.getCreationDate();
+		this.address = dto.getAddress();
+		this.creditRequestStatus = dto.getCreditRequestStatus();
+		this.creditTerm = dto.getCreditTerm();
+		this.creditAmount = dto.getCreditAmount();
+		this.creditRepayment = dto.getCreditRepayment();
+		this.creditRepaymentAmount = dto.getCreditRepaymentAmount();
+		this.rejectionReason = dto.getRejectionReason();
+		this.user = dto.getUser();
+		this.insurance = dto.getInsurance();
+		this.type = dto.getType();
+		this.credit = dto.getCredit();
+		this.netSalary = dto.getNetSalary();
+		this.compte = dto.getCompte();
+	}
+	
+    
+    
 
 }

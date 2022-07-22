@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
+import tn.esprit.softib.dto.FormulaireDTO;
 import tn.esprit.softib.entity.ConfirmationMessage;
 import tn.esprit.softib.entity.FormByUserStat;
 import tn.esprit.softib.entity.Formulaire;
@@ -84,7 +85,8 @@ public class FormulaireController {
 	@PutMapping("/update")
 	@ResponseBody
 	@PreAuthorize("hasRole('ADMIN')")
-	public Formulaire update(@RequestBody Formulaire newFrom) {
+	public Formulaire update(@RequestBody FormulaireDTO dto) {
+		Formulaire newFrom = new Formulaire(dto);
 		return formulaireService.updateFormulaire(newFrom);
 	}
 

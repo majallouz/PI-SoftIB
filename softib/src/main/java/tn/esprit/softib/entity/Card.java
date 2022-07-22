@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import tn.esprit.softib.dto.CardDTO;
 import tn.esprit.softib.enums.CardType;
 
 @Entity
@@ -20,6 +21,15 @@ public class Card {
 	private long id;
 	private String rib;
 	private CardType cardType;
+	
+	public Card(CardDTO dto) {
+		super();
+		this.id = dto.getId();
+		this.rib = dto.getRib();
+		this.cardType = dto.getCardType();
+	}
+	
+	
 	
 
 }

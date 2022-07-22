@@ -1,5 +1,8 @@
 package tn.esprit.softib.dto;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -10,14 +13,18 @@ import javax.persistence.Id;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import tn.esprit.softib.entity.Operation;
 import tn.esprit.softib.entity.Reclamation;
 import tn.esprit.softib.enums.ReclamationStatus;
+import tn.esprit.softib.enums.TypeTransaction;
 
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
 @AllArgsConstructor
-@Entity
+@NoArgsConstructor
 public class ReclamationDTO {
 	
 	@Id

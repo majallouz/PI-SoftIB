@@ -50,6 +50,7 @@ import lombok.extern.slf4j.Slf4j;
 import tn.esprit.softib.Response.CompteResponse;
 import tn.esprit.softib.Response.ResponseMessage;
 import tn.esprit.softib.component.EmailServiceImpl;
+import tn.esprit.softib.dto.CompteDTO;
 import tn.esprit.softib.entity.Compte;
 import tn.esprit.softib.entity.User;
 import tn.esprit.softib.enums.CreditStatus;
@@ -85,7 +86,8 @@ public class CompteController {
 		@PostMapping("/save/{id}")
 		@ResponseBody
 		@PreAuthorize("hasRole('ADMIN')")
-		public Compte save(@RequestBody Compte compte,@PathVariable("id") Long id){
+		public Compte save(@RequestBody CompteDTO dto,@PathVariable("id") Long id){
+			Compte compte = new Compte(dto);
 			compte.setUser(userservice.getUserById(id));
 			Compte compteResult = compteService.addCompte(compte);
 			return compteResult;
@@ -111,7 +113,8 @@ public class CompteController {
 	@PutMapping("/update")
 	@ResponseBody
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<ResponseMessage> update(@RequestBody Compte compte){
+	public ResponseEntity<ResponseMessage> update(@RequestBody CompteDTO dto){
+		Compte compte = new Compte(dto);
 		return compteService.updateCompte(compte);
 	}
 	

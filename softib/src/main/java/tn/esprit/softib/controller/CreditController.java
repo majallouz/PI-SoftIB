@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
+import tn.esprit.softib.dto.CreditDTO;
+import tn.esprit.softib.dto.PaymentDTO;
 import tn.esprit.softib.entity.Credit;
 import tn.esprit.softib.entity.Payment;
 import tn.esprit.softib.service.ICreditService;
@@ -25,7 +27,8 @@ public class CreditController {
 	//create payment
     @PostMapping(value = "payments/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Credit> createPayment(@RequestBody Payment payment, @PathVariable(value = "id") Integer id) throws Exception {
+    public ResponseEntity<Credit> createPayment(@RequestBody PaymentDTO dto, @PathVariable(value = "id") Integer id) throws Exception {
+    	Payment payment = new Payment(dto);
         return new ResponseEntity<Credit>(creditService.addPayment(payment,id), HttpStatus.OK);
     }
 
@@ -39,7 +42,8 @@ public class CreditController {
 	//Update Credit
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> updateCredit(@PathVariable(value = "id") Integer id, @RequestBody Credit credit) throws Exception {
+    public ResponseEntity<String> updateCredit(@PathVariable(value = "id") Integer id, @RequestBody CreditDTO dto) throws Exception {
+    	Credit credit = new Credit(dto);
         return new ResponseEntity<>(creditService.updateCredit(id, credit), HttpStatus.OK);
     }
     

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.extern.slf4j.Slf4j;
-
+import tn.esprit.softib.dto.InsuranceDTO;
 import tn.esprit.softib.entity.Insurance;
 import tn.esprit.softib.service.IInsuranceService;
 import tn.esprit.softib.service.InsuranceServiceImpl;
@@ -57,7 +57,8 @@ public class InsuranceController {
     //Update Insurance
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> updateInsurance(@PathVariable(value = "id") Integer id, @RequestBody Insurance insurance) throws Exception {
+    public ResponseEntity<String> updateInsurance(@PathVariable(value = "id") Integer id, @RequestBody InsuranceDTO dto) throws Exception {
+    	Insurance insurance = new Insurance(dto);
         return new ResponseEntity<>(insuranceService.updateInsurance(id, insurance), HttpStatus.OK);
     }
 

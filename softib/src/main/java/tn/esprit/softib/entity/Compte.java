@@ -26,6 +26,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import tn.esprit.softib.dto.CompteDTO;
 import tn.esprit.softib.enums.Nature;
 import tn.esprit.softib.enums.TypeTransaction;
 
@@ -59,6 +60,24 @@ public class Compte implements Serializable{
     private Set<Credit> credits;
      @OneToMany(mappedBy="compte")
         private Collection<Operation> operations;
+     
+     
+	public Compte(CompteDTO dto) {
+		super();
+		this.id = dto.getId();
+		this.nomComplet = dto.getNomComplet();
+		this.natureCompte = dto.getNatureCompte();
+		this.rib = dto.getRib();
+		this.iban = dto.getIban();
+		this.codeBic = dto.getCodeBic();
+		this.solde = dto.getSolde();
+		this.email = dto.getEmail();
+		
+		this.data = dto.getData();
+		this.user = dto.getUser();
+		this.credits = dto.getCredits();
+		this.operations = dto.getOperations();
+	}
 
     
 

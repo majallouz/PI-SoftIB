@@ -16,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import tn.esprit.softib.dto.FormulaireDTO;
 import tn.esprit.softib.enums.FormStatus;
 import tn.esprit.softib.enums.Gender;
 import tn.esprit.softib.enums.Nature;
@@ -48,5 +49,25 @@ public class Formulaire implements Serializable {
     @JoinColumn(name = "user_id")
 	@JsonIgnore
 	private User user;
+
+	public Formulaire(FormulaireDTO dto) {
+		super();
+		this.id = dto.getId();
+		this.cin = dto.getCin();
+		this.firstName = dto.getFirstName();
+		this.lastName = dto.getLastName();
+		this.phone = dto.getPhone();
+		this.gender = dto.getGender();
+		this.adresse = dto.getAdresse();
+		this.email = dto.getEmail();
+		this.natureCompte = dto.getNatureCompte();
+		this.salaireNet = dto.getSalaireNet();
+		this.job = dto.getJob();
+		this.type = dto.getType();
+		this.formStatus = dto.getFormStatus();
+		this.user = dto.getUser();
+	}
+	
+	
 
 }

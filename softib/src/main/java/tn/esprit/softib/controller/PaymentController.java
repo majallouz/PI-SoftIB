@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import tn.esprit.softib.dto.PaymentDTO;
 import tn.esprit.softib.entity.Credit;
 import tn.esprit.softib.entity.Payment;
 import tn.esprit.softib.entity.User;
@@ -34,7 +35,8 @@ public class PaymentController {
     //Update payment
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> updatePayment(@PathVariable(value = "id") Integer id, @RequestBody Payment payment) throws Exception {
+    public ResponseEntity<String> updatePayment(@PathVariable(value = "id") Integer id, @RequestBody PaymentDTO dto) throws Exception {
+    	Payment payment = new Payment(dto);
         return new ResponseEntity<>(paymentService.updatePayment(id, payment), HttpStatus.OK);
     }
 

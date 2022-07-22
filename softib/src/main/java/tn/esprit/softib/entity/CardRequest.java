@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import tn.esprit.softib.dto.CardRequestDTO;
 import tn.esprit.softib.enums.CardType;
 import tn.esprit.softib.enums.FormStatus;
 import tn.esprit.softib.enums.Gender;
@@ -33,6 +34,21 @@ public class CardRequest {
 	private String email;
 	private CardType cardType;
 	private FormStatus formStatus;
+	
+	public CardRequest(CardRequestDTO dto) {
+		super();
+		this.id = dto.getId();
+		this.cin = dto.getCin();
+		this.rib = dto.getRib();
+		this.firstName = dto.getFirstName();
+		this.lastName = dto.getLastName();
+		this.phone = dto.getPhone();
+		this.email = dto.getEmail();
+		this.cardType = dto.getCardType();
+		this.formStatus = dto.getFormStatus();
+	}
+	
+	
 	
 
 }
