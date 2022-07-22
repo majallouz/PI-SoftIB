@@ -4,7 +4,7 @@ pipeline {
     registry = "mgara07/softib"
     registryCredential = 'DockerHub'
     dockerImage = ''
-    WORKSPACE = 'C:\ProgramData\Jenkins\.jenkins\workspace\pipeline'
+    WORKSPACE = 'C:/ProgramData/Jenkins/.jenkins/workspace/pipeline'
   }
     
 
