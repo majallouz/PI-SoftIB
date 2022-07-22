@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import tn.esprit.softib.dto.InsuranceDTO;
 import tn.esprit.softib.enums.TypeCredit;
 
 @Entity
@@ -28,5 +29,17 @@ public class Insurance {
     @OneToOne(fetch = FetchType.EAGER, mappedBy = "insurance")
     @JsonIgnore
     private CreditRequest creditRequest;
+	public Insurance(InsuranceDTO dto) {
+		super();
+		this.id = dto.getId();
+		this.creationDate = dto.getCreationDate();
+		this.expiryDate = dto.getExpiryDate();
+		this.type = dto.getType();
+		this.amount = dto.getAmount();
+		this.beneficiary = dto.getBeneficiary();
+		this.creditRequest = dto.getCreditRequest();
+	}
+    
+    
 
 }
