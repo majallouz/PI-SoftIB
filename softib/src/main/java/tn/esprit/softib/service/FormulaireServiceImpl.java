@@ -1,7 +1,6 @@
 package tn.esprit.softib.service;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -23,12 +22,10 @@ import tn.esprit.softib.entity.Role;
 import tn.esprit.softib.entity.User;
 import tn.esprit.softib.enums.ERole;
 import tn.esprit.softib.enums.FormStatus;
-import tn.esprit.softib.enums.Gender;
 import tn.esprit.softib.enums.Nature;
 import tn.esprit.softib.enums.Status;
 import tn.esprit.softib.repository.FormulaireRepository;
 import tn.esprit.softib.repository.RoleRepository;
-import tn.esprit.softib.repository.UserRepository;
 
 @Service
 public class FormulaireServiceImpl implements IFormulaireService {

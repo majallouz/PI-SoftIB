@@ -4,17 +4,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.time.LocalDate;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import lombok.extern.slf4j.Slf4j;
 import tn.esprit.softib.entity.Credit;
 import tn.esprit.softib.enums.CreditStatus;
 import tn.esprit.softib.enums.TypeCredit;
 import tn.esprit.softib.entity.CreditRequest;
-import tn.esprit.softib.entity.Insurance;
 import tn.esprit.softib.repository.CreditRepository;
 import tn.esprit.softib.repository.CreditRequestRepository;
 import tn.esprit.softib.repository.InsuranceRepository;

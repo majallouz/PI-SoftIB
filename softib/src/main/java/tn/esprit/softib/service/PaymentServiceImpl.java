@@ -3,28 +3,18 @@ package tn.esprit.softib.service;
 import java.time.LocalDate;
 import java.util.Set;
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.Optional;
-
 import lombok.extern.slf4j.Slf4j;
-
-import org.apache.xmlbeans.impl.values.XmlValueOutOfRangeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import lombok.extern.slf4j.Slf4j;
 import tn.esprit.softib.repository.PaymentRepository;
-import tn.esprit.softib.utility.SystemDeclarations;
 import tn.esprit.softib.entity.Credit;
-import tn.esprit.softib.entity.CreditRequest;
-import tn.esprit.softib.entity.Insurance;
 import tn.esprit.softib.entity.Operation;
 import tn.esprit.softib.entity.Payment;
-import tn.esprit.softib.entity.Transaction;
 import tn.esprit.softib.enums.CreditStatus;
 import tn.esprit.softib.repository.CreditRepository;
-import tn.esprit.softib.repository.InsuranceRepository;
+
 
 @Service
 @Slf4j

@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import tn.esprit.softib.entity.Card;
-import tn.esprit.softib.entity.CardRequest;
 import tn.esprit.softib.repository.CardRepository;
 
 @Service

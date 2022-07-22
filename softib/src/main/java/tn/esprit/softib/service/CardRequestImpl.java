@@ -23,7 +23,6 @@ import tn.esprit.softib.entity.Card;
 import tn.esprit.softib.entity.CardRequest;
 
 import tn.esprit.softib.entity.ConfirmationMessage;
-import tn.esprit.softib.entity.CreditRequest;
 import tn.esprit.softib.entity.User;
 import tn.esprit.softib.enums.CardType;
 
@@ -32,7 +31,7 @@ import tn.esprit.softib.enums.FormStatus;
 import tn.esprit.softib.enums.Status;
 import tn.esprit.softib.repository.CardRequestRepository;
 
-@Slf4j
+
 @Service
 public class CardRequestImpl implements ICardRequest {
 	

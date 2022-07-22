@@ -6,9 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import tn.esprit.softib.entity.Compte;
 import tn.esprit.softib.entity.Reclamation;
-import tn.esprit.softib.entity.User;
 import tn.esprit.softib.repository.ReclamationRepository;
 
 

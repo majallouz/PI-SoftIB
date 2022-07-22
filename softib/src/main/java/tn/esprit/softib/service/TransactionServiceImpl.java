@@ -4,15 +4,12 @@ import java.math.BigDecimal;
 
 import java.util.Date;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
-import tn.esprit.softib.entity.Formulaire;
-import tn.esprit.softib.entity.Operation;
 import tn.esprit.softib.entity.Transaction;
 import tn.esprit.softib.enums.TypeTransaction;
 import tn.esprit.softib.repository.TransactionRepository;

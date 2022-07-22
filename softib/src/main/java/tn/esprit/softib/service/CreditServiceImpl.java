@@ -8,9 +8,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import tn.esprit.softib.entity.Card;
 import tn.esprit.softib.entity.Credit;
-import tn.esprit.softib.entity.CreditRequest;
 import tn.esprit.softib.entity.Payment;
 import tn.esprit.softib.enums.CreditStatus;
 import tn.esprit.softib.repository.CreditRepository;

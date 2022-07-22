@@ -6,32 +6,22 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
-import tn.esprit.softib.entity.FormByUserStat;
 import tn.esprit.softib.entity.Operation;
 import tn.esprit.softib.entity.OperationByStatus;
 import tn.esprit.softib.entity.Transaction;
-import tn.esprit.softib.entity.User;
-import tn.esprit.softib.enums.ERole;
-import tn.esprit.softib.enums.FormStatus;
 import tn.esprit.softib.enums.OperationStatus;
 import tn.esprit.softib.enums.OperationSubType;
 import tn.esprit.softib.enums.OperationType;
 import tn.esprit.softib.enums.TypeTransaction;
-import tn.esprit.softib.entity.Operation;
-import tn.esprit.softib.entity.Transaction;
 import tn.esprit.softib.repository.OperationRepository;
-import tn.esprit.softib.service.IOperationService;
-import tn.esprit.softib.service.ITransactionService;
 import tn.esprit.softib.validator.OperationValidator;
 @Service
 @Slf4j
