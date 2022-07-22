@@ -23,8 +23,10 @@ pipeline {
         }
         }
             post {
+                ws("${WORKSPACE}/softib") {
                 always {
                     junit '**/target/surefire-reports/TEST-*.xml'
+                }
                 }
             }
             }
