@@ -8,12 +8,13 @@ pipeline {
     stages {
          stage('clone and clean repo') {
             steps {
-                git changelog: false, branch: 'master',  credentialsId: 'mgara07', poll: false, url: 'https://github.com/mgara07/softib'
+                git changelog: false, branch: 'malekBranch',  credentialsId: 'mgara07', poll: false, url: 'https://github.com/majallouz/PI-SoftIB.git'
                 
             }
         }
         stage('Test') {
             steps { 
+                sh "cd softib"
                 bat 'mvn test'
             }
             post {
@@ -24,11 +25,13 @@ pipeline {
         }
         stage('Sonar') {
             steps {
+              sh "cd softib"
                 bat 'mvn sonar:sonar'
             }
         }
         stage('Deploy') {
             steps {
+              sh "cd softib"
                 bat 'mvn package deploy '
             }
         }
@@ -36,6 +39,7 @@ pipeline {
         stage('Building image') {
 
         steps {
+          sh "cd softib"
 
           script {
 
@@ -51,6 +55,7 @@ pipeline {
     stage('Deploy image') {
 
       steps {
+        sh "cd softib"
 
         script {
 
@@ -69,6 +74,7 @@ pipeline {
         stage('clean ws') {
 
             steps {
+              sh "cd softib"
                     cleanWs()
             }
 
