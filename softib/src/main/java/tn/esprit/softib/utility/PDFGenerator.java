@@ -78,7 +78,7 @@ public class PDFGenerator {
 			addFooter(document);
 			document.close();
 			log.info("------------------Your PDF Report is ready!-------------------------");
-			System.out.println("------------------Your PDF Report is ready!-------------------------");
+			
 			
 
 		} catch (FileNotFoundException | DocumentException e) {
