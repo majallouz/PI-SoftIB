@@ -4,7 +4,11 @@ pipeline {
     registry = "mgara07/softib"
     registryCredential = 'DockerHub'
     dockerImage = ''
+    WORKSPACE = 'C:\ProgramData\Jenkins\.jenkins\workspace\pipeline'
   }
+    
+
+
     stages {
          stage('clone and clean repo') {
             steps {
@@ -14,7 +18,7 @@ pipeline {
         }
         stage('Test') {
             steps { 
-                
+                ws("${WORKSPACE}/softib") {
                 bat 'mvn test'
             }
             post {
@@ -22,6 +26,7 @@ pipeline {
                     junit '**/target/surefire-reports/TEST-*.xml'
                 }
             }
+        }
         }
         stage('Sonar') {
             steps {
