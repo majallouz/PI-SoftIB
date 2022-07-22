@@ -14,7 +14,7 @@ pipeline {
         }
         stage('Test') {
             steps { 
-                sh "cd softib"
+                
                 bat 'mvn test'
             }
             post {
@@ -25,13 +25,13 @@ pipeline {
         }
         stage('Sonar') {
             steps {
-              sh "cd softib"
+              
                 bat 'mvn sonar:sonar'
             }
         }
         stage('Deploy') {
             steps {
-              sh "cd softib"
+              
                 bat 'mvn package deploy '
             }
         }
@@ -39,7 +39,7 @@ pipeline {
         stage('Building image') {
 
         steps {
-          sh "cd softib"
+         
 
           script {
 
@@ -55,7 +55,7 @@ pipeline {
     stage('Deploy image') {
 
       steps {
-        sh "cd softib"
+        
 
         script {
 
@@ -74,7 +74,7 @@ pipeline {
         stage('clean ws') {
 
             steps {
-              sh "cd softib"
+              
                     cleanWs()
             }
 
