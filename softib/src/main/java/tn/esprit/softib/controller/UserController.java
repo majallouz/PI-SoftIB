@@ -19,9 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import tn.esprit.softib.entity.BanUserDescription;
 import tn.esprit.softib.Response.ResponseMessage;
 import tn.esprit.softib.dto.UserDTO;
-import tn.esprit.softib.entity.Formulaire;
 import tn.esprit.softib.entity.User;
-import tn.esprit.softib.service.IFormulaireService;
 import tn.esprit.softib.service.IUserService;
 
 @RestController

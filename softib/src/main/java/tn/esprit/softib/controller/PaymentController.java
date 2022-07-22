@@ -5,13 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+
 import org.springframework.web.bind.annotation.*;
 
 import tn.esprit.softib.dto.PaymentDTO;
-import tn.esprit.softib.entity.Credit;
 import tn.esprit.softib.entity.Payment;
-import tn.esprit.softib.entity.User;
 import tn.esprit.softib.service.IPaymentService;
 
 @RestController

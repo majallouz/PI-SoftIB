@@ -1,7 +1,6 @@
 package tn.esprit.softib.controller;
 
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import tn.esprit.softib.dto.CreditRequestDTO;
-import tn.esprit.softib.entity.Credit;
 import tn.esprit.softib.entity.CreditRequest;
 import tn.esprit.softib.service.ICreditRequestService;
 import tn.esprit.softib.service.IPaymentService;

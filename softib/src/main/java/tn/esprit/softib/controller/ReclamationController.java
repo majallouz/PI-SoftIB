@@ -1,7 +1,6 @@
 package tn.esprit.softib.controller;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,12 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import tn.esprit.softib.dto.ReclamationDTO;
-import tn.esprit.softib.entity.Compte;
-import tn.esprit.softib.entity.Formulaire;
 import tn.esprit.softib.entity.Reclamation;
-import tn.esprit.softib.entity.User;
 import tn.esprit.softib.service.IReclamationService;
 
 @RestController

@@ -16,9 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import tn.esprit.softib.dto.CardDTO;
 import tn.esprit.softib.entity.Card;
-import tn.esprit.softib.entity.CardRequest;
 import tn.esprit.softib.service.ICard;
-import tn.esprit.softib.service.ICardRequest;
 
 @RestController
 @RequestMapping("/card")

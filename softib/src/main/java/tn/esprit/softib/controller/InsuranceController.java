@@ -16,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import tn.esprit.softib.dto.InsuranceDTO;
 import tn.esprit.softib.entity.Insurance;
 import tn.esprit.softib.service.IInsuranceService;
-import tn.esprit.softib.service.InsuranceServiceImpl;
 
 @RestController
 @RequestMapping(value = "/api/insurances")
