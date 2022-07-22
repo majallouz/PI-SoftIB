@@ -63,7 +63,7 @@ public class CreditRequestServiceImpl implements ICreditRequestService {
     public String updateCreditRequest(Integer id, CreditRequest newCreditRequest)  {
     	Optional<CreditRequest> value = this.creditRequestRepository.findById(id.longValue());
         if (value.isPresent()) {
-            CreditRequest oldCreditRequest = creditRequestRepository.findById(id.longValue()).get();
+            CreditRequest oldCreditRequest = value.get();
             if (newCreditRequest.getCin() != null) {
                 oldCreditRequest.setCin(newCreditRequest.getCin());
             }
@@ -105,7 +105,7 @@ public class CreditRequestServiceImpl implements ICreditRequestService {
     public CreditRequest getCreditRequest(Integer id) {
     	Optional<CreditRequest> value = this.creditRequestRepository.findById(id.longValue());
     	if (value.isPresent()) {
-    	return creditRequestRepository.findById(id.longValue()).get(); }
+    	return value.get(); }
     	else return null ;
     }
 
@@ -113,7 +113,7 @@ public class CreditRequestServiceImpl implements ICreditRequestService {
     public String rejectCreditRequest(Integer id, CreditRequest newCreditRequest) {
     	Optional<CreditRequest> value = this.creditRequestRepository.findById(id.longValue());
     	if (value.isPresent()) {
-            CreditRequest oldCreditRequest = creditRequestRepository.findById(id.longValue()).get();
+            CreditRequest oldCreditRequest = value.get();
             if (oldCreditRequest.getCreditRequestStatus().equals(CreditStatus.CREATED)) {
             	if (newCreditRequest.getRejectionReason() != null) {
                 oldCreditRequest.setRejectionReason(newCreditRequest.getRejectionReason());
@@ -138,7 +138,7 @@ public class CreditRequestServiceImpl implements ICreditRequestService {
     public String acceptCreditRequestChanges(Integer id)  {
     	Optional<CreditRequest> value = this.creditRequestRepository.findById(id.longValue());
     	if (value.isPresent()) {
-    		CreditRequest creditRequest = creditRequestRepository.findById(id.longValue()).get();
+    		CreditRequest creditRequest = value.get();
             if (creditRequest.getCreditRequestStatus().toString().equals(CreditStatus.WAITINGFORCLIENTACCEPTANCE.toString())) {
                 creditRequest.setCreditRequestStatus(CreditStatus.ACCEPTED);
                 creditRequest.setRejectionReason("None");
@@ -153,7 +153,7 @@ public class CreditRequestServiceImpl implements ICreditRequestService {
     public String createCreditFromCreditRequest(Integer id)  {
     	Optional<CreditRequest> value = this.creditRequestRepository.findById(id.longValue());
     	if (value.isPresent()) {
-    		CreditRequest creditRequest = creditRequestRepository.findById(id.longValue()).get();
+    		CreditRequest creditRequest = value.get();
             if (creditRequest.getCreditRequestStatus().equals(CreditStatus.VALIDATED)) {
                 creditRequest.setCreditRequestStatus(CreditStatus.CONFIRMED);
                 creditRequestRepository.save(creditRequest);
@@ -210,7 +210,7 @@ public class CreditRequestServiceImpl implements ICreditRequestService {
     	String msg ="";
     	Optional<CreditRequest> value = this.creditRequestRepository.findById(id.longValue());
         if (value.isPresent()) {
-            CreditRequest creditRequest = creditRequestRepository.findById(id.longValue()).get();
+            CreditRequest creditRequest = value.get();
             creditRequest = checkEligibaleCreditRequest(creditRequest);
             
             creditRequestRepository.save(creditRequest);
