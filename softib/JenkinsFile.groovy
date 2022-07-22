@@ -30,22 +30,24 @@ pipeline {
         }
         stage('Sonar') {
             steps {
-              
+                ws("${WORKSPACE}/softib"){
                 bat 'mvn sonar:sonar'
             }
         }
+        }
         stage('Deploy') {
             steps {
-              
+              ws("${WORKSPACE}/softib"){
                 bat 'mvn package deploy '
             }
+        }
         }
        
         stage('Building image') {
 
         steps {
          
-
+            ws("${WORKSPACE}/softib"){
           script {
 
             dockerImage = docker.build registry + ":$BUILD_NUMBER"
@@ -55,12 +57,13 @@ pipeline {
         }
 
       }
+        }
 
     
     stage('Deploy image') {
 
       steps {
-        
+        ws("${WORKSPACE}/softib"){
 
         script {
 
@@ -75,7 +78,7 @@ pipeline {
       }
 
     }
-     
+    }
         stage('clean ws') {
 
             steps {
