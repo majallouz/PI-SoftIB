@@ -22,13 +22,7 @@ pipeline {
                 bat 'mvn test' 
         }
         }
-            post {
-                ws("${WORKSPACE}/softib") {
-                always {
-                    junit '**/target/surefire-reports/TEST-*.xml'
-                }
-                }
-            }
+            
             }
         stage('Sonar') {
             steps {
