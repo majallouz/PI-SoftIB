@@ -82,11 +82,12 @@ pipeline {
         stage('clean ws') {
 
             steps {
-              
+                    ws("${WORKSPACE}/softib"){
                     cleanWs()
             }
 
         }
+    }
     }
     post { 
         always {            
