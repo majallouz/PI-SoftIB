@@ -2,6 +2,7 @@ package tn.esprit.softib.service;
 
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -22,7 +23,7 @@ import tn.esprit.softib.entity.Card;
 import tn.esprit.softib.entity.CardRequest;
 
 import tn.esprit.softib.entity.ConfirmationMessage;
-
+import tn.esprit.softib.entity.CreditRequest;
 import tn.esprit.softib.entity.User;
 import tn.esprit.softib.enums.CardType;
 
@@ -74,7 +75,11 @@ public class CardRequestImpl implements ICardRequest {
 	@Override
 	public CardRequest getCardRequestByRib(String rib) {
 		// TODO Auto-generated method stub
-		return cardRequestRepository.findByRib(rib).get();
+		Optional<CardRequest> value = this.cardRequestRepository.findByRib(rib);
+		if (value.isPresent()) {
+			return value.get();
+		}
+		else return null ;
 	}
 	
 	@Override

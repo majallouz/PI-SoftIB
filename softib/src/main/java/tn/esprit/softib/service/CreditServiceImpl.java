@@ -5,8 +5,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
+import tn.esprit.softib.entity.Card;
 import tn.esprit.softib.entity.Credit;
 import tn.esprit.softib.entity.CreditRequest;
 import tn.esprit.softib.entity.Payment;
@@ -26,7 +28,10 @@ public class CreditServiceImpl implements ICreditService {
     
     @Override
     public Credit addPayment(Payment payment, Integer creditId)  {
-    	Credit credit = creditRepository.findById(creditId.longValue()).get();
+    	Optional<Credit> value = this.creditRepository.findById(creditId.longValue());
+    	if(value.isPresent()) {
+    	Credit credit = value.get(); 
+    	
         Set<Payment> payments = credit.getPayments();       
         payments.add(payment);
         credit.setPayments(payments);
@@ -35,6 +40,7 @@ public class CreditServiceImpl implements ICreditService {
         paymentRepository.save(payment);
         creditRepository.save(credit);
         return credit;
+    	} else return null ;
     }
     
     
@@ -127,6 +133,7 @@ public class CreditServiceImpl implements ICreditService {
 
     @Override
     public String deleteCredit(Integer id)  {
+    	
         if (creditRepository.findById(id.longValue()).isPresent()) {
             creditRepository.deleteById(id.longValue());
             return "Credit Deleted Successfully";
@@ -136,8 +143,9 @@ public class CreditServiceImpl implements ICreditService {
 
     @Override
     public String updateCredit(Integer id, Credit newCredit)  {
-        if (creditRepository.findById(id.longValue()).isPresent()) {
-            Credit oldCredit = creditRepository.findById(id.longValue()).get();
+    	Optional<Credit> value = this.creditRepository.findById(id.longValue());
+        if (value.isPresent()) {
+            Credit oldCredit = value.get();
             if (newCredit.getAgent() != null) {
                 oldCredit.setAgent(newCredit.getAgent());
             }
@@ -183,7 +191,11 @@ public class CreditServiceImpl implements ICreditService {
 
     @Override
     public Credit getCredit(Integer id)  {
-        return creditRepository.findById(id.longValue()).get();
+    	Optional<Credit> value = this.creditRepository.findById(id.longValue());
+    	if(value.isPresent()) {
+    		return value.get();
+    	} else return null ;
+        
     }
 	
 }

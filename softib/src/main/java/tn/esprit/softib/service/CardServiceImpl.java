@@ -1,11 +1,13 @@
 package tn.esprit.softib.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import tn.esprit.softib.entity.Card;
+import tn.esprit.softib.entity.CardRequest;
 import tn.esprit.softib.repository.CardRepository;
 
 @Service
@@ -22,7 +24,10 @@ public class CardServiceImpl implements ICard {
 	@Override
 	public Card getCardById(long id) {
 		// TODO Auto-generated method stub
-		return cardRepository.findById(id).get();
+		Optional<Card> value = this.cardRepository.findById(id);
+		if(value.isPresent()) {
+		return value.get();
+		} else return null ;
 	}
 
 	@Override

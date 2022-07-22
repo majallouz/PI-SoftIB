@@ -3,7 +3,7 @@ package tn.esprit.softib.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
-
+import tn.esprit.softib.entity.Credit;
 import tn.esprit.softib.entity.CreditRequest;
 import tn.esprit.softib.entity.Insurance;
 import tn.esprit.softib.repository.CreditRequestRepository;
@@ -12,6 +12,7 @@ import tn.esprit.softib.utility.SystemDeclarations;
 
 import java.text.MessageFormat;
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -25,8 +26,9 @@ public class InsuranceServiceImpl implements IInsuranceService {
 
     @Override
     public String addInsurance(Integer creditRequestId) {
-        if (creditRequestRepository.findById(creditRequestId.longValue()).isPresent()) {
-            CreditRequest creditRequest = creditRequestRepository.findById(creditRequestId.longValue()).get();
+    	Optional<CreditRequest> value = this.creditRequestRepository.findById(creditRequestId.longValue());
+        if (value.isPresent()) {
+            CreditRequest creditRequest = value.get();
             Insurance insurance = new Insurance();
             insurance.setType(creditRequest.getType());
             insurance.setCreationDate(new Date());
@@ -46,9 +48,9 @@ public class InsuranceServiceImpl implements IInsuranceService {
 
     @Override
     public String deleteInsurance(Integer id)  {
-    	
-    if(insuranceRepository.findById(id.longValue()).isPresent()){
-    	Insurance InsuranceDelete = insuranceRepository.findById(id.longValue()).get();
+    	Optional<Insurance> value = this.insuranceRepository.findById(id.longValue());
+    if(value.isPresent()){
+    	Insurance InsuranceDelete = value.get();
     
     	if (InsuranceDelete.getCreditRequest()!= null) {
         CreditRequest creditRequest = InsuranceDelete.getCreditRequest();
@@ -66,8 +68,9 @@ public class InsuranceServiceImpl implements IInsuranceService {
 
     @Override
     public String updateInsurance(Integer id, Insurance newInsurance)  {
-        if (insuranceRepository.findById(id.longValue()).isPresent()) {
-            Insurance oldInsurance = insuranceRepository.findById(id.longValue()).get();
+    	Optional<Insurance> value = this.insuranceRepository.findById(id.longValue());
+        if (value.isPresent()) {
+            Insurance oldInsurance = value.get();
             if (newInsurance.getAmount() != null) {
                 oldInsurance.setAmount(newInsurance.getAmount());
             }
@@ -90,7 +93,10 @@ public class InsuranceServiceImpl implements IInsuranceService {
 
     @Override
     public Insurance getInsurance(Integer id)  {
-        return insuranceRepository.findById(id.longValue()).get();
+    	Optional<Insurance> value = this.insuranceRepository.findById(id.longValue());
+        if (value.isPresent()) {
+        return value.get();
+        } else return null ;
     }
 
 }
