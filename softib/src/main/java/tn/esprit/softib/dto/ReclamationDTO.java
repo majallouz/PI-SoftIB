@@ -1,22 +1,24 @@
-package tn.esprit.softib.entity;
+package tn.esprit.softib.dto;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import tn.esprit.softib.dto.ReclamationDTO;
+import tn.esprit.softib.entity.Reclamation;
 import tn.esprit.softib.enums.ReclamationStatus;
-
-import javax.persistence.*;
-
-import java.io.Serializable;
-
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "reclamation")
-public class Reclamation implements Serializable {
+public class ReclamationDTO {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -38,19 +40,4 @@ public class Reclamation implements Serializable {
     @Column(name = "user_id")
     private Long userId;
 
-    public boolean isReclamationClosed() {
-        return (ReclamationStatus.CLOSED.equals(this.status));
-    }
-
-	public Reclamation(ReclamationDTO dto) {
-		super();
-		this.id = dto.getId();
-		this.status = dto.getStatus();
-		this.reclamationTitle = dto.getReclamationTitle();
-		this.reclamationDescription = dto.getReclamationDescription();
-		this.assigneeName = dto.getAssigneeName();
-		this.userId = dto.getUserId();
-	}
-    
-    
 }

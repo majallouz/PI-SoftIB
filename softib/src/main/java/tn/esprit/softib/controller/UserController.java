@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import tn.esprit.softib.entity.BanUserDescription;
 import tn.esprit.softib.Response.ResponseMessage;
+import tn.esprit.softib.dto.UserDTO;
 import tn.esprit.softib.entity.Formulaire;
 import tn.esprit.softib.entity.User;
 import tn.esprit.softib.service.IFormulaireService;
@@ -74,7 +75,8 @@ public class UserController {
 	@PostMapping("/save")
 	@ResponseBody
 	@PreAuthorize("hasRole('ADMIN')")
-	public User save(@RequestBody User userBody){
+	public User save(@RequestBody UserDTO dto){
+		User userBody = new User(dto);
 		User user = userService.addUser(userBody);
 		return user;
 	}
@@ -89,7 +91,8 @@ public class UserController {
 	@PutMapping("/update")
 	@ResponseBody
 	@PreAuthorize("hasRole('ADMIN')")
-	public User update(@RequestBody User newUser){
+	public User update(@RequestBody UserDTO dto){
+		User newUser = new User(dto);
 		return userService.updateUser(newUser);
 	}
 	

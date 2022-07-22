@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import tn.esprit.softib.dto.TransactionDTO;
 import tn.esprit.softib.enums.TypeTransaction;
 
 @Entity
@@ -43,5 +44,18 @@ public class Transaction implements Serializable{
 	        this.movement = m;
 	    }
 
+		public Transaction(TransactionDTO dto) {
+			super();
+			this.id = dto.getId();
+			this.date = dto.getDate();
+			this.transactionType = dto.getTransactionType();
+			this.isNegativeTx = dto.getIsNegativeTx();
+			this.isRevertedTransaction = dto.getIsRevertedTransaction();
+			this.movement = dto.getMovement();
+			this.operation = dto.getOperation();
+		}
+
+	    
+	    
 	 
 }

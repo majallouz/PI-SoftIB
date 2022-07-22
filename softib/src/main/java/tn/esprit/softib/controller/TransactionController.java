@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import tn.esprit.softib.dto.TransactionDTO;
 import tn.esprit.softib.entity.Formulaire;
 import tn.esprit.softib.entity.Transaction;
 import tn.esprit.softib.enums.TypeTransaction;
@@ -31,7 +32,8 @@ public class TransactionController  {
     ITransactionService transactionService;
     
     @PostMapping(value ="/transactions/create" )
-    public ResponseEntity<Transaction> save(@RequestBody Transaction transaction) {
+    public ResponseEntity<Transaction> save(@RequestBody TransactionDTO dto) {
+    	Transaction transaction = new Transaction(dto);
         return ResponseEntity.ok(transactionService.save(transaction));
     }
 

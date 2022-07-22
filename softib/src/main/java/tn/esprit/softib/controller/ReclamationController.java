@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import tn.esprit.softib.dto.ReclamationDTO;
 import tn.esprit.softib.entity.Compte;
 import tn.esprit.softib.entity.Formulaire;
 import tn.esprit.softib.entity.Reclamation;
@@ -48,7 +49,8 @@ public class ReclamationController {
 	
 	@PostMapping("/create")
 	@ResponseBody
-	public Reclamation save(@RequestBody Reclamation reclamation){
+	public Reclamation save(@RequestBody ReclamationDTO dto){
+		Reclamation reclamation = new Reclamation(dto);
 		Reclamation reclamationResult = reclamationService.addReclamation(reclamation);
 		return reclamationResult;
 	}
@@ -56,7 +58,8 @@ public class ReclamationController {
 	
 	@PutMapping("/update")
 	@ResponseBody
-	public Reclamation update(@RequestBody Reclamation reclamation){
+	public Reclamation update(@RequestBody ReclamationDTO dto){
+		Reclamation reclamation = new Reclamation(dto);
 		return reclamationService.updateReclamation(reclamation);
 	}
 	

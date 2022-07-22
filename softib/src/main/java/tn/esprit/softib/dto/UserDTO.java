@@ -1,32 +1,44 @@
-package tn.esprit.softib.entity;
+package tn.esprit.softib.dto;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.*;
-
-import org.springframework.beans.factory.annotation.Value;
+import javax.persistence.CascadeType;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import tn.esprit.softib.entity.Compte;
+import tn.esprit.softib.entity.CreditRequest;
+import tn.esprit.softib.entity.DemandeCnx;
+import tn.esprit.softib.entity.Formulaire;
+import tn.esprit.softib.entity.Question;
+import tn.esprit.softib.entity.Role;
 import tn.esprit.softib.enums.Gender;
-import tn.esprit.softib.enums.TypeTransaction;
 import tn.esprit.softib.enums.Type;
 
-import tn.esprit.softib.dto.UserDTO;
-
-@Entity
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
 @AllArgsConstructor
-public class User implements Serializable {
-
+@NoArgsConstructor
+public class UserDTO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "UserSequence")
 	@SequenceGenerator(name = "UserSequence", allocationSize = 5)
@@ -63,47 +75,4 @@ public class User implements Serializable {
 	@OneToOne
 	private DemandeCnx demandeCnx;
 
-	public User(String username, String email, String password) {
-		this.username = username;
-		String[] codes = username.split("-");
-		this.cin = codes[0];
-		this.firstName = codes[2];
-		this.lastName = codes[1];
-		this.email = email;
-		this.password = password;
-	}
-	
-	
-	
-
-
-
-
-	public User(UserDTO dto) {
-		super();
-		this.id = dto.getId();
-		this.siren = dto.getSiren();
-		this.cin = dto.getCin();
-		this.username = dto.getUsername();
-		this.password = dto.getPassword();
-		this.firstName = dto.getFirstName();
-		this.lastName = dto.getLastName();
-		this.phone = dto.getPhone();
-		this.gender = dto.getGender();
-		this.adresse = dto.getAdresse();
-		this.email = dto.getEmail();
-		this.type = dto.getType();
-		this.isSigned = dto.getIsSigned();
-		this.isBanned = dto.getIsBanned();
-		this.banRaison = dto.getBanRaison();
-		this.creationDate = dto.getCreationDate();
-		this.job = dto.getJob();
-		this.salaireNet = dto.getSalaireNet();
-		this.roles = dto.getRoles();
-		this.formulaires = dto.getFormulaires();
-		this.comptes = dto.getComptes();
-		this.questions = dto.getQuestions();
-		this.creditRequests = dto.getCreditRequests();
-		this.demandeCnx = dto.getDemandeCnx();
-	}
 }
