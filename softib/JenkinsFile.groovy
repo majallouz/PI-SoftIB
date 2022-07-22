@@ -21,11 +21,7 @@ pipeline {
                 ws("${WORKSPACE}/softib") {
                 bat 'mvn test'
             
-            post {
-                always {
-                    junit '**/target/surefire-reports/TEST-*.xml'
-                }
-            }
+            
         }
         }
             }
